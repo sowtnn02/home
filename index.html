@@ -3,11 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>家庭入口首頁</title>
+  <title>荒野保護協會親子團南二團</title>
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
-      font-family: system-ui, sans-serif;
+      font-family: "Noto Sans TC", sans-serif;
       background: #f0f4f8;
       color: #333;
     }
@@ -24,20 +28,20 @@
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 20px;
+      gap: 24px;
       padding: 20px;
-      max-width: 1100px; /* 限制總寬度不超過 */
+      max-width: 1000px;
       margin: 0 auto;
     }
 
     .card {
-      flex: 0 0 calc(50% - 20px); /* 每排2張 */
-      max-width: calc(50% - 20px);
+      flex: 0 0 calc(40% - 24px); /* 縮小到約80%視覺寬度 */
+      max-width: calc(40% - 24px);
       aspect-ratio: 16 / 9;
       border-radius: 12px;
       overflow: hidden;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      transition: transform 0.2s;
+      transition: transform 0.2s ease;
     }
 
     .card:hover {
@@ -51,15 +55,22 @@
       display: block;
     }
 
+    @media (max-width: 768px) {
+      .card {
+        flex: 0 0 calc(45% - 24px); /* 平板上也稍微縮放 */
+        max-width: calc(45% - 24px);
+      }
+    }
+
     @media (max-width: 600px) {
+      header {
+        font-size: 1.5rem;
+        padding-top: 24px;
+      }
+
       .card {
         flex: 0 0 100%;
         max-width: 100%;
-      }
-
-      header {
-        font-size: 1.5rem;
-        padding: 30px 10px 0;
       }
     }
   </style>
@@ -69,16 +80,19 @@
 
   <div class="container">
     <a class="card" href="https://sowtnn02.github.io/antnbee/" target="_blank">
-      <img src="antnbee01.png" alt="螞蜂家庭入口">
+      <img src="antnbee01.png" alt="蟻蜂家庭入口" />
     </a>
+
     <a class="card" href="https://sowtnn02.github.io/deer/" target="_blank">
-      <img src="deer01.png" alt="奔鹿家庭入口">
+      <img src="deer01.png" alt="奔鹿家庭入口" />
     </a>
+
     <a class="card" href="https://sowtnn02.github.io/eagle/" target="_blank">
-      <img src="eagle01.png" alt="翔鷹家庭入口">
+      <img src="eagle01.png" alt="翔鷹家庭入口" />
     </a>
+
     <a class="card" href="https://sowtnn02.github.io/home/owl_work" target="_blank">
-      <img src="owl01.png" alt="育導工作入口">
+      <img src="owl01.png" alt="育導工作入口" />
     </a>
   </div>
 </body>
