@@ -5,65 +5,78 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>家庭入口首頁</title>
   <style>
-    /* ===== 基本樣式 ===== */
-    *, *::before, *::after { box-sizing: border-box; }
-    body{
-      margin:0;
+    body {
+      margin: 0;
       font-family: system-ui, sans-serif;
-      background:#f0f4f8;
+      background: #f0f4f8;
+      color: #333;
     }
 
-    /* ===== 版面設定 ===== */
-    .container{
-      display:flex;
-      flex-wrap:wrap;          /* 允許換行 */
-      gap:20px;                /* 圖片間距 */
-      justify-content:center;  /* 水平置中 */
-      padding:20px;
+    header {
+      text-align: center;
+      padding: 40px 20px 10px;
+      font-size: 2rem;
+      font-weight: bold;
+      color: #2c3e50;
     }
 
-    /* 每張卡片-桌機佔 50% 寬（減掉間距） */
-    .card{
-      flex:0 0 calc(50% - 20px);   /* 固定 2 欄 */
-      max-width:calc(50% - 20px);
-      aspect-ratio:16 / 9;          /* 保持 16:9 */
-      border-radius:12px;
-      overflow:hidden;
-      box-shadow:0 4px 12px rgba(0,0,0,.1);
-      transition:transform .2s;
-    }
-    .card:hover{ transform:scale(1.03); }
-
-    .card img{
-      width:100%;
-      height:100%;
-      object-fit:cover;
-      display:block;
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      padding: 20px;
+      max-width: 1100px; /* 限制總寬度不超過 */
+      margin: 0 auto;
     }
 
-    /* ===== 手機版：一列一張 ===== */
-    @media (max-width:600px){
-      .card{
-        flex:0 0 100%;
-        max-width:100%;
+    .card {
+      flex: 0 0 calc(50% - 20px); /* 每排2張 */
+      max-width: calc(50% - 20px);
+      aspect-ratio: 16 / 9;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s;
+    }
+
+    .card:hover {
+      transform: scale(1.03);
+    }
+
+    .card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    @media (max-width: 600px) {
+      .card {
+        flex: 0 0 100%;
+        max-width: 100%;
+      }
+
+      header {
+        font-size: 1.5rem;
+        padding: 30px 10px 0;
       }
     }
   </style>
 </head>
 <body>
+  <header>荒野保護協會親子團南二團</header>
+
   <div class="container">
     <a class="card" href="https://sowtnn02.github.io/antnbee/" target="_blank">
-      <img src="antnbee01.png" alt="蟻蜂家庭入口">
+      <img src="antnbee01.png" alt="螞蜂家庭入口">
     </a>
-
     <a class="card" href="https://sowtnn02.github.io/deer/" target="_blank">
       <img src="deer01.png" alt="奔鹿家庭入口">
     </a>
-
     <a class="card" href="https://sowtnn02.github.io/eagle/" target="_blank">
       <img src="eagle01.png" alt="翔鷹家庭入口">
     </a>
-
     <a class="card" href="https://sowtnn02.github.io/home/owl_work" target="_blank">
       <img src="owl01.png" alt="育導工作入口">
     </a>
