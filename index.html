@@ -1,3 +1,69 @@
-<html>
-  
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>家庭入口首頁</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: sans-serif;
+      background-color: #f0f4f8;
+    }
+
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      gap: 20px;
+    }
+
+    .card {
+      flex: 1 1 300px;
+      max-width: 500px;
+      aspect-ratio: 16 / 9;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      transition: transform 0.2s ease-in-out;
+    }
+
+    .card:hover {
+      transform: scale(1.03);
+    }
+
+    .card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    @media (max-width: 600px) {
+      .card {
+        flex-basis: 100%;
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a class="card" href="https://sowtnn02.github.io/antnbee/" target="_blank">
+      <img src="antnbee01.png" alt="蟻蜂家庭入口">
+    </a>
+    <a class="card" href="https://sowtnn02.github.io/deer/" target="_blank">
+      <img src="deer01.png" alt="奔鹿家庭入口">
+    </a>
+    <a class="card" href="https://sowtnn02.github.io/eagle/" target="_blank">
+      <img src="eagle01.png" alt="翔鷹家庭入口">
+    </a>
+    <a class="card" href="https://sowtnn02.github.io/home/owl_work" target="_blank">
+      <img src="owl01.png" alt="育導工作入口">
+    </a>
+  </div>
+</body>
 </html>
