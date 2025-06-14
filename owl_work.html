@@ -84,19 +84,37 @@
   </style>
 </head>
 <body>
-
   <!-- 回首頁按鈕 -->
   <a href="../index.html" class="home-btn">🏠 回首頁</a>
 
   <!-- 標題 -->
   <h1>荒野保護協會親子團南二團<br>🦉（育導工作入口）🦉</h1>
 
-  <!-- 主內容 -->
-  <div class="container">
+  <div id="password-screen" class="container">
+    <input type="password" id="password-input" placeholder="請輸入工作密碼" style="padding:10px;font-size:1em;width:80%;max-width:300px;" />
+    <button onclick="checkPassword()" style="margin-top:10px;padding:10px 20px;font-size:1em;">進入</button>
+    <div id="error-msg" style="color:red;margin-top:10px;"></div>
+  </div>
+
+  <div id="admin-links" class="container" style="display: none;">
     <a class="link-btn" href="https://sowtnn02.github.io/antnbee/admin" target="_blank">🟠 蟻蜂小隊表單管理</a>
     <a class="link-btn" href="https://sowtnn02.github.io/deer/admin" target="_blank">🟢 奔鹿小隊表單管理</a>
     <a class="link-btn" href="https://sowtnn02.github.io/eagle/admin" target="_blank">🟣 翔鷹小隊表單管理</a>
   </div>
 
+  <script>
+    const correct = "sown2";
+    function checkPassword() {
+      const input = document.getElementById("password-input").value;
+      const error = document.getElementById("error-msg");
+      if (input === correct) {
+        document.getElementById("password-screen").style.display = "none";
+        document.getElementById("admin-links").style.display = "flex";
+      } else {
+        error.textContent = "密碼錯誤，請再試一次";
+      }
+    }
+  </script>
 </body>
+
 </html>
