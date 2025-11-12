@@ -87,6 +87,18 @@
   <ul id="results"></ul>
 
   <script>
+    // ✅ 團別對應 key
+    const groupMap = { '小蟻團':'ant','炫蜂團':'bee','奔鹿團':'deer','翔鷹團':'eagle' };
+
+    // ✅ 不同團別對應的 Google Sheet JSON 來源
+    const sheetUrls = {
+      "小蟻團": 'https://opensheet.elk.sh/13v4T864SSZGSoNiIPGOY12mfzT2q5sbvDrarusC_zLE/蜂蟻',
+      "炫蜂團": 'https://opensheet.elk.sh/13v4T864SSZGSoNiIPGOY12mfzT2q5sbvDrarusC_zLE/蜂蟻',
+      "奔鹿團": 'https://opensheet.elk.sh/13v4T864SSZGSoNiIPGOY12mfzT2q5sbvDrarusC_zLE/鹿',
+      "翔鷹團": 'https://opensheet.elk.sh/13v4T864SSZGSoNiIPGOY12mfzT2q5sbvDrarusC_zLE/鷹'
+    };
+
+
     // ✅ 完整團隊資料
     const teamData = {
       ant: {
@@ -240,12 +252,7 @@
         ]
       }
     };
-    // 團別對應 key
-    const groupMap = { '小蟻團':'ant','炫蜂團':'bee','奔鹿團':'deer','翔鷹團':'eagle' };
-
-    // ✅ Google Sheet 來源
-    const SHEET_URL = 'https://opensheet.elk.sh/13v4T864SSZGSoNiIPGOY12mfzT2q5sbvDrarusC_zLE/聯團';
-
+    // ✅ 工具函數
     function convertToOpensheet(url) {
       const m = url.match(/\/d\/([^\/]+)/);
       return m
@@ -253,8 +260,8 @@
         : '';
     }
 
-    async function loadSheetsFromSheet() {
-      const res = await fetch(SHEET_URL);
+    async function loadSheetsFromSheet(sheetUrl) {
+      const res = await fetch(sheetUrl);
       const raw = await res.json();
       return raw.map(item => ({
         name: `${item.month} ${item.title}`,
@@ -272,8 +279,11 @@
       if (!grp) return alert('請選擇團別');
 
       const key = groupMap[grp];
+      const sheetUrl = sheetUrls[grp];
+      if (!sheetUrl) return alert('查無對應資料表來源');
+
       const allSubGroups = Object.keys(teamData[key]);
-      const sheets = await loadSheetsFromSheet();
+      const sheets = await loadSheetsFromSheet(sheetUrl);
 
       for (const sheet of sheets) {
         results.innerHTML += `
