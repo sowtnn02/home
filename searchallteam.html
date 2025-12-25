@@ -87,19 +87,24 @@
   <ul id="results"></ul>
 
   <script>
+    // 🔴 1. 設定你的 GAS 網址
+    const MY_PROXY_URL = "https://script.google.com/macros/s/AKfycbxmzTs-dGe8rlGjeaUJH44bravhTNccqFsfImSz_wV-bSniF-E1aOqZ6nyShvyVYAtFCQ/exec";
+
+    // 🔴 2. 設定你的主資料庫 ID
+    const MASTER_DB_ID = "13v4T864SSZGSoNiIPGOY12mfzT2q5sbvDrarusC_zLE"; 
+
     // ✅ 團別對應 key
     const groupMap = { '小蟻團':'ant','炫蜂團':'bee','奔鹿團':'deer','翔鷹團':'eagle' };
 
-    // ✅ 不同團別對應的 Google Sheet JSON 來源
-    const sheetUrls = {
-      "小蟻團": 'https://opensheet.elk.sh/13v4T864SSZGSoNiIPGOY12mfzT2q5sbvDrarusC_zLE/蜂蟻',
-      "炫蜂團": 'https://opensheet.elk.sh/13v4T864SSZGSoNiIPGOY12mfzT2q5sbvDrarusC_zLE/蜂蟻',
-      "奔鹿團": 'https://opensheet.elk.sh/13v4T864SSZGSoNiIPGOY12mfzT2q5sbvDrarusC_zLE/鹿',
-      "翔鷹團": 'https://opensheet.elk.sh/13v4T864SSZGSoNiIPGOY12mfzT2q5sbvDrarusC_zLE/鷹'
+    // ✅ 修改：這裡不再存 opensheet 網址，改存「資料庫中的工作表名稱」
+    const sheetNameMap = {
+      "小蟻團": '蜂蟻',
+      "炫蜂團": '蜂蟻',
+      "奔鹿團": '鹿',
+      "翔鷹團": '鷹'
     };
 
-
-    // ✅ 完整團隊資料
+    // ✅ 完整團隊資料 (維持不變)
     const teamData = {
       ant: {
         "小黑蟻": [
@@ -122,8 +127,6 @@
           { family: "58 管鬚蟹 / 藍腹鷴", child: "絨鼠" },
           { family: "76 羅漢松 / 風鈴木", child: "馬來貘" },
           { family: "80 田嬰 / 小雞", child: "膨鼠" },
-          // { family: "83 大貓 / 大白熊", child: "小麻雀" },
-          // { family: "84 星夜 / 冰島", child: "葵花子" }
         ],
         "小綠蟻": [
           { family: "37 風神翼龍 / 小葉欖仁", child: "黃鸝" },
@@ -133,7 +136,6 @@
           { family: "60 森林 / 螢火蟲", child: "美洲豹" },
           { family: "61 薰衣草", child: "花園鰻" },
           { family: "67 腕龍 / 荔枝", child: "海豚" },
-          // { family: "73 海獺 / 信天翁", child: "亞洲獅" },
           { family: "75 玄武岩 / 雞蛋花", child: "刺河豚" }
         ],
         "小紅蟻": [
@@ -152,7 +154,6 @@
         "泥壺蜂": [
           { family: "23 鋰(Li) / 鎂(Mg)", child: "鈹" },
           { family: "26 海獅 / 海狗", child: "海豹" },
-          // { family: "29 變色龍 / 龜背芋", child: "鯊魚" },
           { family: "34 泥鰍 / 蘆薈", child: "稀泥裡" },
           { family: "40 極光 / 藍洞", child: "火山" },
           { family: "42 小麥穗 / 尤加利", child: "貓薄荷" },
@@ -176,7 +177,6 @@
         "長腳蜂": [
           { family: "12 北極熊 / 企鵝", child: "小白鯨" },
           { family: "24 星螺 / 淡菜", child: "巨貝" },
-          // { family: "29 變色龍 / 龜背芋", child: "豹貓" },
           { family: "33 泥巴 / 蘆葦", child: "羊咩咩" },
           { family: "35 松果 / 台灣冷杉", child: "茉莉" },
           { family: "41 龍葵", child: "颱風" },
@@ -245,28 +245,48 @@
           { family: "10 白頭翁 / 牡羊座", child: "小雨燕" },
           { family: "13 鯨魚 / 山竹", child: "白熊" },
           { family: "14 石頭 / 毛西番蓮", child: "小螳螂" },
-          // { family: "15 石虎 / 藍花藤", child: "短耳貓" },
           { family: "20 櫻花鹿", child: "梅花兔" },
-          // { family: "30 二氧化碳 / 小柚子", child: "領角鴞" },
           { family: "88 獅子座 / 青鳥", child: "台灣黑熊" },
         ]
       }
     };
-    // ✅ 工具函數
-    function convertToOpensheet(url) {
-      const m = url.match(/\/d\/([^\/]+)/);
-      return m
-        ? `https://opensheet.elk.sh/${m[1]}/%E8%A1%A8%E5%96%AE%E5%9B%9E%E6%87%89%201`
-        : '';
+
+    // ✅ 修改：將原本轉成 opensheet 的函式，改成轉成 GAS Proxy URL
+    function toMyProxyUrl(originalUrl) {
+      if (!originalUrl) return "";
+      
+      const match = originalUrl.match(/\/d\/(.*?)(\/|$)/);
+      const targetId = match ? match[1] : "";
+      
+      if (!targetId) return "";
+
+      // 預設抓取 "表單回應 1"
+      return `${MY_PROXY_URL}?targetId=${targetId}&sheetName=${encodeURIComponent("表單回應 1")}`;
     }
 
-    async function loadSheetsFromSheet(sheetUrl) {
-      const res = await fetch(sheetUrl);
-      const raw = await res.json();
-      return raw.map(item => ({
-        name: `${item.month} ${item.title}`,
-        url: convertToOpensheet(item.response_url || item.form_url)
-      }));
+    // ✅ 修改：讀取主資料庫列表 (傳入的是工作表名稱，不是網址了)
+    async function loadSheetsFromSheet(sheetName) {
+      const url = `${MY_PROXY_URL}?targetId=${MASTER_DB_ID}&sheetName=${encodeURIComponent(sheetName)}`;
+      
+      try {
+        const res = await fetch(url);
+        const raw = await res.json();
+
+        if (raw.error) {
+           console.error("Master DB Error", raw);
+           alert("無法讀取主資料表");
+           return [];
+        }
+        
+        // 既然你說欄位已改回英文，這裡使用英文 key: month, title, response_url
+        return raw.map(item => ({
+          name: `${item.month || ''} ${item.title || ''}`,
+          url: toMyProxyUrl(item.response_url || item.form_url)
+        }));
+      } catch (e) {
+        console.error(e);
+        return [];
+      }
     }
 
     const groupSelect = document.getElementById('groupSelect');
@@ -279,13 +299,27 @@
       if (!grp) return alert('請選擇團別');
 
       const key = groupMap[grp];
-      const sheetUrl = sheetUrls[grp];
-      if (!sheetUrl) return alert('查無對應資料表來源');
+      const masterSheetName = sheetNameMap[grp]; // 取得對應的工作表名稱
+
+      if (!masterSheetName) return alert('查無對應資料表來源');
+
+      results.innerHTML = '<li style="text-align:center; color:#666;">⏳ 查詢中，請稍候...</li>';
 
       const allSubGroups = Object.keys(teamData[key]);
-      const sheets = await loadSheetsFromSheet(sheetUrl);
+      const sheets = await loadSheetsFromSheet(masterSheetName);
+
+      // 清除 "查詢中" 提示
+      results.innerHTML = '';
+
+      if (sheets.length === 0) {
+        results.innerHTML = '<li>⚠️ 找不到任何表單紀錄，請確認資料庫。</li>';
+        return;
+      }
 
       for (const sheet of sheets) {
+        // 略過沒有網址的項目
+        if (!sheet.url || sheet.url.includes("targetId=&")) continue;
+
         results.innerHTML += `
           <li style="
             background:#e0f0ff;
@@ -308,22 +342,35 @@
 
           let data;
           try {
-            const resp = await fetch(sheet.url + '?t=' + Date.now(), { cache:'no-store' });
+            // ⚠️ 這裡很重要：因為 proxy URL 本身已經有 ?targetId=...
+            // 所以後面的參數要用 "&" 連接，而不是 "?"
+            const resp = await fetch(sheet.url + '&t=' + Date.now(), { cache:'no-store' });
             data = await resp.json();
+            
+            if (data.error) throw new Error(data.error);
+
           } catch {
-            results.innerHTML += `<li>${sub}：⚠️ 查詢失敗</li>`;
+            results.innerHTML += `<li>${sub}：⚠️ 查詢失敗 (連線逾時或權限錯誤)</li>`;
             continue;
           }
 
           data.forEach(row => {
             const vals = Object.values(row);
+            // 假設表單回應格式：[時間戳記, 家庭名稱, 小孩姓名, 小隊, 出席狀況...]
+            // 請確認這裡的 index 是否符合你的表單欄位順序
             const fam = (vals[1] || '').trim();
+            
             entries.forEach(e => {
               if (fam !== e.family.trim()) return;
+              // 檢查多個可能的小孩欄位 (處理多胞胎或多選)
               for (let i = 0; i < 3; i++) {
+                // 注意：這裡依賴你的表單欄位順序：
+                // [2]:小孩名, [3]:小隊, [4]:出席狀態
                 const child = (vals[2 + i*3] || '').trim();
                 const squad = (vals[3 + i*3] || '').trim();
                 const st = (vals[4 + i*3] || '出席').trim();
+                
+                // 比對小隊 (包含團名防止填錯)
                 if (squad === sub || squad === grp) {
                   const k = `${e.family.trim()}|${e.child.trim()}`;
                   statusMap[k] = { ...statusMap[k], filled:true, submitted:true, status:st };
