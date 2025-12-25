@@ -86,17 +86,19 @@
   </div>
   <ul id="results"></ul>
 
+<script src="https://sowtnn02.github.io/home/team-data.js"></script>
+
   <script>
-    // 🔴 1. 設定你的 GAS 網址
+    // 🔴 2. 設定你的 GAS 網址 (萬用查詢器)
     const MY_PROXY_URL = "https://script.google.com/macros/s/AKfycbxmzTs-dGe8rlGjeaUJH44bravhTNccqFsfImSz_wV-bSniF-E1aOqZ6nyShvyVYAtFCQ/exec";
 
-    // 🔴 2. 設定你的主資料庫 ID
+    // 🔴 3. 設定你的主資料庫 ID
     const MASTER_DB_ID = "13v4T864SSZGSoNiIPGOY12mfzT2q5sbvDrarusC_zLE"; 
 
-    // ✅ 團別對應 key
+    // ✅ 團別對應 key (對應 team-data.js 裡的 key)
     const groupMap = { '小蟻團':'ant','炫蜂團':'bee','奔鹿團':'deer','翔鷹團':'eagle' };
 
-    // ✅ 修改：這裡不再存 opensheet 網址，改存「資料庫中的工作表名稱」
+    // ✅ 資料庫中的工作表名稱
     const sheetNameMap = {
       "小蟻團": '蜂蟻',
       "炫蜂團": '蜂蟻',
@@ -104,181 +106,29 @@
       "翔鷹團": '鷹'
     };
 
-    // ✅ 完整團隊資料 (維持不變)
-    const teamData = {
-      ant: {
-        "小黑蟻": [
-          { family: "28 山 / 秋", child: "月" },
-          { family: "51 水熊蟲 / 橘小豬", child: "獵豹" },
-          { family: "52 海膽 / 芒草", child: "毛毛雨" },
-          { family: "55 Hyena / 銀合歡", child: "Meerkat" },
-          { family: "62 落羽松", child: "黑面琵鷺" },
-          { family: "64 山羊 / 拉布拉多", child: "紫斑蝶" },
-          { family: "71 海岸線 / 星辰花", child: "小金魚" },
-          { family: "78 綠豆 / 紅豆", child: "紅豆仁" },
-          { family: "81 狗尾草 / 卡斯比亞", child: "小樹懶" },
-          { family: "86 石斑 / 丹楓", child: "小象" }
-        ],
-        "小黃蟻": [
-          { family: "39 燈籠果 / 桔梗", child: "小花鹿" },
-          { family: "46 冬至 / 瓢蟲", child: "小美人魚" },
-          { family: "47 海峽 / 野薑花", child: "小石虎" },
-          { family: "53 松樹 / 松鼠", child: "小松果" },
-          { family: "58 管鬚蟹 / 藍腹鷴", child: "絨鼠" },
-          { family: "76 羅漢松 / 風鈴木", child: "馬來貘" },
-          { family: "80 田嬰 / 小雞", child: "膨鼠" },
-        ],
-        "小綠蟻": [
-          { family: "37 風神翼龍 / 小葉欖仁", child: "黃鸝" },
-          { family: "41 龍葵", child: "彩虹" },
-          { family: "44 米蝦 / 珊瑚大戟", child: "捕蠅草" },
-          { family: "55 Hyena / 銀合歡", child: "Beluga" },
-          { family: "60 森林 / 螢火蟲", child: "美洲豹" },
-          { family: "61 薰衣草", child: "花園鰻" },
-          { family: "67 腕龍 / 荔枝", child: "海豚" },
-          { family: "75 玄武岩 / 雞蛋花", child: "刺河豚" }
-        ],
-        "小紅蟻": [
-          { family: "37 風神翼龍 / 小葉欖仁", child: "彩虹龍" },
-          { family: "48 折衷鸚鵡 / 海鸚", child: "彩虹巨嘴鳥" },
-          { family: "56 角鯨 / 海鷗", child: "小蝙蝠" },
-          { family: "57 山櫻花", child: "菊石" },
-          { family: "72 鮭魚頭 / 麥芽糖", child: "大王魷魚" },
-          { family: "79 汪洋大海 / 滿天星", child: "粉紅兔" },
-          { family: "82 白臘樹 / 山茶花", child: "南瓜" },
-          { family: "85 冰山 / 流星雨", child: "閃電" },
-          { family: "87 翡翠木 / 紫薊", child: "橡實果" }
-        ]
-      },
-      bee: {
-        "泥壺蜂": [
-          { family: "23 鋰(Li) / 鎂(Mg)", child: "鈹" },
-          { family: "26 海獅 / 海狗", child: "海豹" },
-          { family: "34 泥鰍 / 蘆薈", child: "稀泥裡" },
-          { family: "40 極光 / 藍洞", child: "火山" },
-          { family: "42 小麥穗 / 尤加利", child: "貓薄荷" },
-          { family: "64 山羊 / 拉布拉多", child: "狐猴" },
-          { family: "69 魟魚 / 波波草", child: "葡萄柚" },
-          { family: "74 跑山雞 / 黃花風鈴木", child: "櫻桃蘿蔔" },
-          { family: "77 桂冠草 / 北極星", child: "樹蛙" }
-        ],
-        "虎頭蜂": [
-          { family: "18 橘子皮 / 橘子樹", child: "橘子籽" },
-          { family: "22 蟑螂 / 石榴", child: "狐獴" },
-          { family: "25 臭氧層 / 香氣", child: "開心果" },
-          { family: "26 海獅 / 海狗", child: "海星" },
-          { family: "31 Camel 駱駝 / 玄鳳", child: "黃金雉" },
-          { family: "36 太陽 / 銀河", child: "宇宙" },
-          { family: "52 海膽 / 芒草", child: "刺蝟" },
-          { family: "58 管鬚蟹 / 藍腹鷴", child: "雪貂" },
-          { family: "59 兔袋鼠 / 香草莢", child: "小柴犬" },
-          { family: "79 汪洋大海 / 滿天星", child: "豬豬德" }
-        ],
-        "長腳蜂": [
-          { family: "12 北極熊 / 企鵝", child: "小白鯨" },
-          { family: "24 星螺 / 淡菜", child: "巨貝" },
-          { family: "33 泥巴 / 蘆葦", child: "羊咩咩" },
-          { family: "35 松果 / 台灣冷杉", child: "茉莉" },
-          { family: "41 龍葵", child: "颱風" },
-          { family: "43 袋鼠 / 小羽苔", child: "銅錢草" },
-          { family: "44 米蝦 / 珊瑚大戟", child: "太陽系" },
-          { family: "45 鯨頭鸛 / 草履蟲", child: "小老虎" },
-          { family: "70 晨光 / 麋鹿", child: "河馬" },
-          { family: "86 石斑 / 丹楓", child: "小蘋果" }
-        ],
-        "細腰蜂": [
-          { family: "4 水熊 / 玉露", child: "兵蟻" },
-          { family: "27 咬人貓 / 嬰兒淚", child: "雞蛋花" },
-          { family: "28 山 / 秋", child: "木" },
-          { family: "38 麥香 / 玉如意", child: "開心狗" },
-          { family: "46 冬至 / 瓢蟲", child: "小蘑菇" },
-          { family: "47 海峽 / 野薑花", child: "太陽" },
-          { family: "54 獅子王 / 三色堇", child: "彩虹鍬形蟲" },
-          { family: "57 山櫻花", child: "斑貓鯊" },
-          { family: "63 大草 / 無尾熊", child: "小草" },
-          { family: "66 螃蟹 / 水豚", child: "花豹" },
-          { family: "87 翡翠木 / 紫薊", child: "甘草" }
-        ]
-      },
-      deer: {
-        "草原鹿": [
-          { family: "68 水牛 / 水竹", child: "蜂鳥" },
-          { family: "19 隼 / 苦楝", child: "黑貓" },
-          { family: "33 泥巴 / 蘆葦", child: "藪貓" },
-          { family: "70 晨光 / 麋鹿", child: "美洲虎" },
-          { family: "3 河馬 / 銀杏", child: "小海馬" },
-          { family: "27 咬人貓 / 嬰兒淚", child: "天堂鳥" }
-        ],
-        "森林鹿": [
-          { family: "74 跑山雞 / 黃花風鈴木", child: "山獅" },
-          { family: "17 咸豐草 / 菱角", child: "帝雉" },
-          { family: "19 隼 / 苦楝", child: "笑翠鳥" },
-          { family: "11 阿勃勒 / 楓樹", child: "牽牛花" },
-          { family: "18 橘子皮 / 橘子樹", child: "橘子葉" }
-        ],
-        "高地鹿": [
-          { family: "15 石虎 / 藍花藤", child: "風信子" },
-          { family: "21 藍眼淚 / 響鈴豆", child: "白頭鷹" },
-          { family: "45 鯨頭鸛 / 草履蟲", child: "小獅子" },
-          { family: "77 桂冠草 / 北極星", child: "花栗鼠" },
-          { family: "69 魟魚 / 波波草", child: "海桐" },
-          { family: "50 稻穗 / 上弦月", child: "鸚鵡螺" }
-        ],
-        "湖泊鹿": [
-          { family: "65 玉山 / 北極狐", child: "貓熊" },
-          { family: "12 北極熊 / 企鵝", child: "虎鯨" },
-          { family: "69 魟魚 / 波波草", child: "綠竹" },
-          { family: "32 ICE / 栗子", child: "小刺蝟" },
-          { family: "86 石斑 / 丹楓", child: "波妞" }
-        ]
-      },
-      eagle: {
-        "翔鷹": [
-          { family: "1 鳳凰 / 米蟲", child: "夏天" },
-          { family: "2 西洋山葵 / 檸檬", child: "櫻花" },
-          { family: "5 長臂猿 / 孔雀魚", child: "小蜜蜂" },
-          { family: "6 黑熊 / 土豆仁", child: "鼴鼠" },
-          { family: "7 錦鯉 / 曼波魚", child: "小魚兒" },
-          { family: "8 灰熊 / 相思樹", child: "含羞草" },
-          { family: "8 灰熊 / 相思樹", child: "穿山甲" },
-          { family: "9 藍鯨 / 向日葵", child: "犀牛" },
-          { family: "10 白頭翁 / 牡羊座", child: "小雨燕" },
-          { family: "13 鯨魚 / 山竹", child: "白熊" },
-          { family: "14 石頭 / 毛西番蓮", child: "小螳螂" },
-          { family: "20 櫻花鹿", child: "梅花兔" },
-          { family: "88 獅子座 / 青鳥", child: "台灣黑熊" },
-        ]
-      }
-    };
+    // ❌ 原本的 const teamData = { ... } 已經刪除，改用上面引入的檔案
 
-    // ✅ 修改：將原本轉成 opensheet 的函式，改成轉成 GAS Proxy URL
+    // 轉換成 GAS Proxy URL
     function toMyProxyUrl(originalUrl) {
       if (!originalUrl) return "";
-      
       const match = originalUrl.match(/\/d\/(.*?)(\/|$)/);
       const targetId = match ? match[1] : "";
-      
       if (!targetId) return "";
-
       // 預設抓取 "表單回應 1"
       return `${MY_PROXY_URL}?targetId=${targetId}&sheetName=${encodeURIComponent("表單回應 1")}`;
     }
 
-    // ✅ 修改：讀取主資料庫列表 (傳入的是工作表名稱，不是網址了)
+    // 讀取主資料庫列表
     async function loadSheetsFromSheet(sheetName) {
       const url = `${MY_PROXY_URL}?targetId=${MASTER_DB_ID}&sheetName=${encodeURIComponent(sheetName)}`;
-      
       try {
         const res = await fetch(url);
         const raw = await res.json();
-
         if (raw.error) {
            console.error("Master DB Error", raw);
            alert("無法讀取主資料表");
            return [];
         }
-        
-        // 既然你說欄位已改回英文，這裡使用英文 key: month, title, response_url
         return raw.map(item => ({
           name: `${item.month || ''} ${item.title || ''}`,
           url: toMyProxyUrl(item.response_url || item.form_url)
@@ -295,20 +145,27 @@
 
     searchBtn.addEventListener('click', async () => {
       results.innerHTML = '';
+      
+      // 安全檢查：確認 teamData 是否成功載入
+      if (typeof teamData === 'undefined') {
+        alert("⚠️ 無法讀取名單資料，請檢查網路連線或 team-data.js 路徑。");
+        return;
+      }
+
       const grp = groupSelect.value.trim();
       if (!grp) return alert('請選擇團別');
 
       const key = groupMap[grp];
-      const masterSheetName = sheetNameMap[grp]; // 取得對應的工作表名稱
+      const masterSheetName = sheetNameMap[grp];
 
       if (!masterSheetName) return alert('查無對應資料表來源');
 
       results.innerHTML = '<li style="text-align:center; color:#666;">⏳ 查詢中，請稍候...</li>';
 
+      // 直接使用全域變數 teamData
       const allSubGroups = Object.keys(teamData[key]);
       const sheets = await loadSheetsFromSheet(masterSheetName);
 
-      // 清除 "查詢中" 提示
       results.innerHTML = '';
 
       if (sheets.length === 0) {
@@ -317,7 +174,6 @@
       }
 
       for (const sheet of sheets) {
-        // 略過沒有網址的項目
         if (!sheet.url || sheet.url.includes("targetId=&")) continue;
 
         results.innerHTML += `
@@ -342,13 +198,9 @@
 
           let data;
           try {
-            // ⚠️ 這裡很重要：因為 proxy URL 本身已經有 ?targetId=...
-            // 所以後面的參數要用 "&" 連接，而不是 "?"
             const resp = await fetch(sheet.url + '&t=' + Date.now(), { cache:'no-store' });
             data = await resp.json();
-            
             if (data.error) throw new Error(data.error);
-
           } catch {
             results.innerHTML += `<li>${sub}：⚠️ 查詢失敗 (連線逾時或權限錯誤)</li>`;
             continue;
@@ -356,21 +208,15 @@
 
           data.forEach(row => {
             const vals = Object.values(row);
-            // 假設表單回應格式：[時間戳記, 家庭名稱, 小孩姓名, 小隊, 出席狀況...]
-            // 請確認這裡的 index 是否符合你的表單欄位順序
             const fam = (vals[1] || '').trim();
             
             entries.forEach(e => {
               if (fam !== e.family.trim()) return;
-              // 檢查多個可能的小孩欄位 (處理多胞胎或多選)
               for (let i = 0; i < 3; i++) {
-                // 注意：這裡依賴你的表單欄位順序：
-                // [2]:小孩名, [3]:小隊, [4]:出席狀態
                 const child = (vals[2 + i*3] || '').trim();
                 const squad = (vals[3 + i*3] || '').trim();
                 const st = (vals[4 + i*3] || '出席').trim();
                 
-                // 比對小隊 (包含團名防止填錯)
                 if (squad === sub || squad === grp) {
                   const k = `${e.family.trim()}|${e.child.trim()}`;
                   statusMap[k] = { ...statusMap[k], filled:true, submitted:true, status:st };
