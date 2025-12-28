@@ -24,24 +24,27 @@
       color: #2c3e50;
     }
 
+    /* --- 圖片選單區塊 --- */
     .container {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 24px;
+      gap: 24px; /* 卡片之間的間距 */
       padding: 20px;
       max-width: 1000px;
       margin: 0 auto;
     }
 
     .card {
-      flex: 0 0 calc(48% - 24px); /* 縮小到約80%視覺寬度 */
-      max-width: calc(48% - 24px);
+      /* 修改設定：強制設定為 50% 寬度扣掉間距的一半，確保永遠是一行兩欄 */
+      flex: 0 0 calc(50% - 12px); 
+      max-width: calc(50% - 12px);
       aspect-ratio: 16 / 9;
       border-radius: 12px;
       overflow: hidden;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
       transition: transform 0.2s ease;
+      background: #fff; /* 避免圖片載入前背景透色 */
     }
 
     .card:hover {
@@ -55,22 +58,59 @@
       display: block;
     }
 
-    @media (max-width: 768px) {
-      .card {
-        flex: 0 0 calc(45% - 24px); /* 平板上也稍微縮放 */
-        max-width: calc(45% - 24px);
-      }
+    /* --- 新增：行事曆區塊樣式 --- */
+    .calendar-section {
+      max-width: 1000px; /* 與上方卡片區同寬 */
+      margin: 20px auto 60px auto; /* 上方留白 20px, 下方留白 60px */
+      padding: 0 20px;
     }
 
+    .section-title {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 20px;
+      padding-top: 20px;
+      border-top: 2px solid #ddd; /* 加一條分隔線區隔上方 */
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    .calendar-wrapper {
+      background: #fff;
+      padding: 15px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .calendar-frame {
+      width: 100%;
+      height: 600px;
+      border: 0;
+      border-radius: 8px;
+    }
+
+    /* --- RWD 調整 --- */
     @media (max-width: 600px) {
       header {
         font-size: 1.5rem;
         padding-top: 24px;
       }
-
+      
+      /* 在手機版縮小間距，讓兩欄顯示時不會太擠 */
+      .container {
+        gap: 12px;
+        padding: 10px;
+      }
+      
       .card {
-        flex: 0 0 100%;
-        max-width: 100%;
+        /* 重新計算手機版寬度：50% 減去 新間距(12px) 的一半 */
+        flex: 0 0 calc(50% - 6px); 
+        max-width: calc(50% - 6px);
+      }
+
+      /* 手機版行事曆高度稍微縮小 */
+      .calendar-frame {
+        height: 450px;
       }
     }
   </style>
@@ -95,5 +135,18 @@
       <img src="img/owl01.png" alt="育導工作入口" />
     </a>
   </div>
+
+  <div class="calendar-section">
+    <div class="section-title">📅 育成會行事曆 (基訓/團務研討)</div>
+    <div class="calendar-wrapper">
+      <iframe 
+        src="https://calendar.google.com/calendar/embed?src=04b7d9519d46fc124426f4d1225fdd5ed9fac631484a359170fbdb235e8c2b3e%40group.calendar.google.com&ctz=Asia%2FTaipei" 
+        class="calendar-frame"
+        frameborder="0" 
+        scrolling="no">
+      </iframe>
+    </div>
+  </div>
+
 </body>
 </html>
