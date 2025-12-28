@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>工作團隊出席總覽 (SearchWorkTeam)</title>
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: linear-gradient(to bottom right, #f9f9f9, #e6f7ff);
+      color: #333;
+      padding: 40px 20px;
+      margin: 0;
+      text-align: center;
+    }
+    h1 {
+      font-size: 1.8em;
+      margin-bottom: 30px;
+      color: #3c6478;
+    }
+    a { text-decoration: none; color: inherit; }
+    .card {
+      background-color: white;
+      max-width: 600px;
+      margin: 0 auto 20px;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      text-align: left;
+    }
+    .card label {
+      display: block;
+      margin-bottom: 15px;
+      font-weight: bold;
+    }
+    .card select {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1em;
+    }
+    .card button {
+      display: block;
+      width: 100%;
+      padding: 10px 0;
+      margin-top: 10px;
+      font-size: 1em;
+      color: white;
+      background-color: #47a7f5;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .card button:hover {
+      background-color: #358ac9;
+    }
+    
+    /* 搜尋結果容器 */
+    #results { 
+      max-width: 600px; 
+      margin: 0 auto; 
+      padding: 0; 
+      list-style: none; 
+      text-align: left;
+    }
+
+    /* 月份/活動標題 */
+    .sheet-title {
+      background: #e0f0ff;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: bold;
+      color: #2a5d9f;
+      margin-top: 30px;
+      margin-bottom: 10px;
+      font-size: 1.1em;
+      border-left: 5px solid #2a5d9f;
+    }
+
+    /* 團隊區塊標題 (導引團隊/育成會) */
+    .team-category {
+      background-color: #f0f8ff;
+      color: #333;
+      font-weight: bold;
+      padding: 8px 12px;
+      margin-top: 15px;
+      border-bottom: 2px solid #ddd;
+      font-size: 1.05em;
+    }
+
+    /* 人員列表項目 */
+    .member-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 15px;
+      border-bottom: 1px solid #eee;
+      background-color: #fff;
+      align-items: center;
+    }
+    .member-row:last-child {
+      border-bottom: none;
+    }
+    
+    .member-info {
+      display: flex;
+      gap: 10px;
+    }
+    .job-title {
+      color: #666;
+      font-size: 0.9em;
+      min-width: 80px;
+    }
+    .vol-name {
+      font-weight: bold;
+      color: #333;
+    }
+
+    /* 狀態樣式 */
+    .status-present { color: green; font-weight: bold; }
+    .status-absent  { color: #d9534f; font-weight: bold; }
+    .status-unfilled { color: #999; font-style: italic; }
+    .status-error { color: orange; }
+
+  </style>
+</head>
+<body>
+  <a href="https://sowtnn02.github.io/home/index"><h1>荒野親子團南二團 工作團隊出席總覽</h1></a>
+  
+  <div class="card">
+    <label for="groupSelect">團別</label>
+    <select id="groupSelect">
+      <option value="">--請選擇團別--</option>
+      <option value="小蟻團">小蟻團</option>
+      <option value="炫蜂團">炫蜂團</option>
+      <option value="奔鹿團">奔鹿團</option>
+      <option value="翔鷹團">翔鷹團</option>
+    </select>
+    <button id="searchBtn">搜尋</button>
+  </div>
+
+  <div id="results"></div>
+
+  <script src="work-team-data.js"></script>
+
+  <script>
+    // 🔴 設定參數
+    const MY_PROXY_URL = "https://script.google.com/macros/s/AKfycbxmzTs-dGe8rlGjeaUJH44bravhTNccqFsfImSz_wV-bSniF-E1aOqZ6nyShvyVYAtFCQ/exec";
+    const MASTER_DB_ID = "13v4T864SSZGSoNiIPGOY12mfzT2q5sbvDrarusC_zLE"; 
+
+    // ✅ 團別對應 key (對應 work-team-data.js 裡的 key)
+    const groupMap = { '小蟻團':'ant', '炫蜂團':'bee', '奔鹿團':'deer', '翔鷹團':'eagle' };
+
+    // ✅ 資料庫中的工作表名稱 (工作人員通常也是紀錄在蜂蟻/鹿/鷹的表單中，這裡沿用設定)
+    const sheetNameMap = {
+      "小蟻團": '蜂蟻',
+      "炫蜂團": '蜂蟻',
+      "奔鹿團": '鹿',
+      "翔鷹團": '鷹'
+    };
+
+    // 轉換成 GAS Proxy URL
+    function toMyProxyUrl(originalUrl) {
+      if (!originalUrl) return "";
+      const match = originalUrl.match(/\/d\/(.*?)(\/|$)/);
+      const targetId = match ? match[1] : "";
+      if (!targetId) return "";
+      return `${MY_PROXY_URL}?targetId=${targetId}&sheetName=${encodeURIComponent("表單回應 1")}`;
+    }
+
+    // 讀取主資料庫列表
+    async function loadSheetsFromSheet(sheetName) {
+      const url = `${MY_PROXY_URL}?targetId=${MASTER_DB_ID}&sheetName=${encodeURIComponent(sheetName)}`;
+      try {
+        const res = await fetch(url);
+        const raw = await res.json();
+        if (raw.error) {
+           console.error("Master DB Error", raw);
+           alert("無法讀取主資料表");
+           return [];
+        }
+        return raw.map(item => ({
+          name: `${item.month || ''} ${item.title || ''}`,
+          url: toMyProxyUrl(item.response_url || item.form_url)
+        }));
+      } catch (e) {
+        console.error(e);
+        return [];
+      }
+    }
+
+    const groupSelect = document.getElementById('groupSelect');
+    const searchBtn = document.getElementById('searchBtn');
+    const results = document.getElementById('results');
+
+    searchBtn.addEventListener('click', async () => {
+      results.innerHTML = '';
+      
+      // 安全檢查
+      if (typeof workteamData === 'undefined') {
+        alert("⚠️ 無法讀取名單資料，請檢查網路連線或 work-team-data.js 路徑。");
+        return;
+      }
+
+      const grp = groupSelect.value.trim();
+      if (!grp) return alert('請選擇團別');
+
+      const key = groupMap[grp];
+      const masterSheetName = sheetNameMap[grp];
+
+      if (!masterSheetName) return alert('查無對應資料表來源');
+
+      results.innerHTML = '<div style="text-align:center; color:#666; margin-top:20px;">⏳ 查詢中，請稍候...</div>';
+
+      // 取得該團所有的團隊類別 (例如：小蟻團導引團隊, 小蟻團育成會團隊)
+      const teamCategories = Object.keys(workteamData[key]);
+      
+      // 讀取活動列表
+      const sheets = await loadSheetsFromSheet(masterSheetName);
+
+      results.innerHTML = '';
+
+      if (sheets.length === 0) {
+        results.innerHTML = '<div style="text-align:center; padding:20px;">⚠️ 找不到任何表單紀錄，請確認資料庫。</div>';
+        return;
+      }
+
+      // --- 開始逐一處理每個活動表單 ---
+      for (const sheet of sheets) {
+        if (!sheet.url || sheet.url.includes("targetId=&")) continue;
+
+        // 建立該月份的區塊
+        const sheetBlock = document.createElement('div');
+        sheetBlock.innerHTML = `<div class="sheet-title">${sheet.name}</div>`;
+        results.appendChild(sheetBlock);
+
+        let formData = [];
+        try {
+          const resp = await fetch(sheet.url + '&t=' + Date.now(), { cache:'no-store' });
+          formData = await resp.json();
+          if (formData.error) throw new Error(formData.error);
+        } catch {
+          sheetBlock.innerHTML += `<div style="padding:10px; color:red;">⚠️ 查詢失敗 (連線逾時或權限錯誤)</div>`;
+          continue;
+        }
+
+        // --- 建立快速查找表 (Mapping) ---
+        // Key: Family Name (B欄), Value: 該列的資料 (Array)
+        // 由於 GAS Proxy 回傳由 Object.values 轉出的 Array，我們依靠 Index
+        // Index 1 = B欄 (Family)
+        // Index 11 = L欄 (出席名單字串)
+        // Index 12 = M欄 (請假名單字串)
+        
+        const submissionMap = {};
+        formData.forEach(row => {
+          const vals = Object.values(row); 
+          // 假設 vals[1] 是家庭名稱 (Family)
+          const famName = (vals[1] || "").trim();
+          if (famName) {
+            // 如果重複填寫，這裡會覆蓋，取最後一筆 (或可改邏輯)
+            submissionMap[famName] = vals;
+          }
+        });
+
+        // --- 逐一處理該團的子團隊 (導引團隊 / 育成會) ---
+        for (const catName of teamCategories) {
+          const members = workteamData[key][catName];
+          
+          // 團隊標題
+          const catDiv = document.createElement('div');
+          catDiv.innerHTML = `<div class="team-category">${catName}</div>`;
+          sheetBlock.appendChild(catDiv);
+
+          // 逐一檢查該團隊成員
+          members.forEach(member => {
+            const memFamily = member.family.trim();
+            const memVol = member.volunteer.trim();
+            const memTitle = member.title;
+
+            let statusHtml = '';
+            
+            // 1. 檢查是否在 B 欄 (submissionMap)
+            if (submissionMap[memFamily]) {
+              const rowVals = submissionMap[memFamily];
+              // 取得 L欄(Index 11) 和 M欄(Index 12)
+              // 注意：若欄位不足，需防呆
+              const attendStr = (rowVals[11] || "").toString();
+              const leaveStr  = (rowVals[12] || "").toString();
+
+              // 2. 判斷邏輯
+              if (attendStr.includes(memVol)) {
+                statusHtml = '<span class="status-present">出席</span>';
+              } else if (leaveStr.includes(memVol)) {
+                statusHtml = '<span class="status-absent">請假</span>';
+              } else {
+                // 有填表 (B欄有)，但 L 和 M 都沒名字 -> 視為"有填表但未勾選" 或 尚未填寫
+                // 依照需求：若沒搜尋到 -> "尚未填寫"。
+                // 這裡算是有填家庭，但沒勾人，技術上可以顯示 "未勾選"
+                // 但為了介面整潔，暫歸類為 "尚未填寫" 或 "不明"
+                statusHtml = '<span class="status-unfilled">未勾選</span>';
+              }
+            } else {
+              // B欄找不到 -> 尚未填寫
+              statusHtml = '<span class="status-unfilled">尚未填寫</span>';
+            }
+
+            // 輸出該員列
+            const rowDiv = document.createElement('div');
+            rowDiv.className = 'member-row';
+            rowDiv.innerHTML = `
+              <div class="member-info">
+                <span class="job-title">${memTitle}</span>
+                <span class="vol-name">${memVol}</span>
+              </div>
+              <div>${statusHtml}</div>
+            `;
+            sheetBlock.appendChild(rowDiv);
+          });
+        }
+      }
+    });
+  </script>
+</body>
+</html>
