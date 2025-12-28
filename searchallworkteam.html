@@ -152,7 +152,7 @@
     // ✅ 團別對應 key (對應 work-team-data.js 裡的 key)
     const groupMap = { '小蟻團':'ant', '炫蜂團':'bee', '奔鹿團':'deer', '翔鷹團':'eagle' };
 
-    // ✅ 資料庫中的工作表名稱 (工作人員通常也是紀錄在蜂蟻/鹿/鷹的表單中，這裡沿用設定)
+    // ✅ 資料庫中的工作表名稱
     const sheetNameMap = {
       "小蟻團": '蜂蟻',
       "炫蜂團": '蜂蟻',
@@ -213,10 +213,7 @@
 
       results.innerHTML = '<div style="text-align:center; color:#666; margin-top:20px;">⏳ 查詢中，請稍候...</div>';
 
-      // 取得該團所有的團隊類別 (例如：小蟻團導引團隊, 小蟻團育成會團隊)
       const teamCategories = Object.keys(workteamData[key]);
-      
-      // 讀取活動列表
       const sheets = await loadSheetsFromSheet(masterSheetName);
 
       results.innerHTML = '';
@@ -246,63 +243,84 @@
         }
 
         // --- 建立快速查找表 (Mapping) ---
-        // Key: Family Name (B欄), Value: 該列的資料 (Array)
-        // 由於 GAS Proxy 回傳由 Object.values 轉出的 Array，我們依靠 Index
-        // Index 1 = B欄 (Family)
-        // Index 11 = L欄 (出席名單字串)
-        // Index 12 = M欄 (請假名單字串)
-        
         const submissionMap = {};
         formData.forEach(row => {
           const vals = Object.values(row); 
-          // 假設 vals[1] 是家庭名稱 (Family)
+          // Index 1 = B欄 (Family)
           const famName = (vals[1] || "").trim();
           if (famName) {
-            // 如果重複填寫，這裡會覆蓋，取最後一筆 (或可改邏輯)
             submissionMap[famName] = vals;
           }
         });
 
-        // --- 逐一處理該團的子團隊 (導引團隊 / 育成會) ---
+        // --- 逐一處理該團的子團隊 ---
         for (const catName of teamCategories) {
           const members = workteamData[key][catName];
           
-          // 團隊標題
           const catDiv = document.createElement('div');
           catDiv.innerHTML = `<div class="team-category">${catName}</div>`;
           sheetBlock.appendChild(catDiv);
 
-          // 逐一檢查該團隊成員
           members.forEach(member => {
             const memFamily = member.family.trim();
             const memVol = member.volunteer.trim();
-            const memTitle = member.title;
+            const memTitle = member.title.trim();
 
-            let statusHtml = '';
+            let statusHtml = '<span class="status-unfilled">尚未填寫</span>';
             
             // 1. 檢查是否在 B 欄 (submissionMap)
             if (submissionMap[memFamily]) {
               const rowVals = submissionMap[memFamily];
-              // 取得 L欄(Index 11) 和 M欄(Index 12)
-              // 注意：若欄位不足，需防呆
-              const attendStr = (rowVals[11] || "").toString();
-              const leaveStr  = (rowVals[12] || "").toString();
 
-              // 2. 判斷邏輯
-              if (attendStr.includes(memVol)) {
-                statusHtml = '<span class="status-present">出席</span>';
-              } else if (leaveStr.includes(memVol)) {
-                statusHtml = '<span class="status-absent">請假</span>';
+              // 🔴 特例處理：翔鷹團副團長（小鷹）
+              if (memTitle === "副團長（小鷹）") {
+                // 邏輯：
+                // C欄(Index 2) 含志工名 -> 結果在 E欄(Index 4)
+                // F欄(Index 5) 含志工名 -> 結果在 H欄(Index 7)
+                // I欄(Index 8) 含志工名 -> 結果在 K欄(Index 10)
+                
+                const cVal = (rowVals[2] || "").toString();
+                const fVal = (rowVals[5] || "").toString();
+                const iVal = (rowVals[8] || "").toString();
+
+                let foundStatus = "";
+                
+                if (cVal.includes(memVol)) {
+                    foundStatus = (rowVals[4] || "出席").trim();
+                } else if (fVal.includes(memVol)) {
+                    foundStatus = (rowVals[7] || "出席").trim();
+                } else if (iVal.includes(memVol)) {
+                    foundStatus = (rowVals[10] || "出席").trim();
+                }
+
+                if (foundStatus) {
+                   if (foundStatus.includes("出席")) {
+                     statusHtml = `<span class="status-present">${foundStatus}</span>`;
+                   } else if (foundStatus.includes("假")) {
+                     statusHtml = `<span class="status-absent">${foundStatus}</span>`;
+                   } else {
+                     statusHtml = `<span class="status-unfilled">${foundStatus}</span>`;
+                   }
+                } else {
+                   // 有填家庭，但沒在 C/F/I 找到這名字 (可能填在其他欄位或沒選)
+                   statusHtml = '<span class="status-unfilled">未勾選</span>';
+                }
+
               } else {
-                // 有填表 (B欄有)，但 L 和 M 都沒名字 -> 視為"有填表但未勾選" 或 尚未填寫
-                // 依照需求：若沒搜尋到 -> "尚未填寫"。
-                // 這裡算是有填家庭，但沒勾人，技術上可以顯示 "未勾選"
-                // 但為了介面整潔，暫歸類為 "尚未填寫" 或 "不明"
-                statusHtml = '<span class="status-unfilled">未勾選</span>';
+                // 🔵 一般工作人員邏輯 (原邏輯)
+                // L欄(Index 11) 出席
+                // M欄(Index 12) 請假
+                const attendStr = (rowVals[11] || "").toString();
+                const leaveStr  = (rowVals[12] || "").toString();
+
+                if (attendStr.includes(memVol)) {
+                  statusHtml = '<span class="status-present">出席</span>';
+                } else if (leaveStr.includes(memVol)) {
+                  statusHtml = '<span class="status-absent">請假</span>';
+                } else {
+                  statusHtml = '<span class="status-unfilled">未勾選</span>';
+                }
               }
-            } else {
-              // B欄找不到 -> 尚未填寫
-              statusHtml = '<span class="status-unfilled">尚未填寫</span>';
             }
 
             // 輸出該員列
