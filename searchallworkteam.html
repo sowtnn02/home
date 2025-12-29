@@ -110,7 +110,15 @@
     .job-title {
       color: #666;
       font-size: 0.9em;
-      min-width: 80px;
+      
+      /* 修改處 1: 設定固定的寬度 (建議 120px~140px，視最長職稱而定) */
+      width: 130px; 
+      
+      /* 修改處 2: 防止寬度被壓縮 */
+      flex-shrink: 0; 
+      
+      /* 修改處 3: 讓文字保持一行，不換行 */
+      white-space: nowrap; 
     }
     .vol-name {
       font-weight: bold;
