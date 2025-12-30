@@ -4,6 +4,7 @@ const workteamData = {
       { title: "複式團團長", family: "18 橘子皮 / 橘子樹", volunteer: "橘子皮" },
       { title: "團長", family: "41 龍葵", volunteer: "龍葵" },
       { title: "副團長", family: "37 風神翼龍 / 小葉欖仁", volunteer: "小葉欖仁" },
+      { title: "副團長", family: "35 松果 / 台灣冷杉", volunteer: "台灣冷杉" },
       { title: "小黑蟻 導引員", family: "48 折衷鸚鵡 / 海鸚", volunteer: "海鸚" },
       { title: "小黑蟻 導引員", family: "61 薰衣草", volunteer: "薰衣草" },
       { title: "小黃蟻 導引員", family: "56 角鯨 / 海鷗", volunteer: "角鯨" },
