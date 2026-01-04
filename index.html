@@ -29,14 +29,14 @@
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 24px; /* 卡片之間的間距 */
+      gap: 24px;
       padding: 20px;
       max-width: 1000px;
       margin: 0 auto;
     }
 
     .card {
-      /* 修改設定：強制設定為 50% 寬度扣掉間距的一半，確保永遠是一行兩欄 */
+      /* 一行兩欄，RWD 自動縮放 */
       flex: 0 0 calc(50% - 12px); 
       max-width: calc(50% - 12px);
       aspect-ratio: 16 / 9;
@@ -44,7 +44,7 @@
       overflow: hidden;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
       transition: transform 0.2s ease;
-      background: #fff; /* 避免圖片載入前背景透色 */
+      background: #fff;
     }
 
     .card:hover {
@@ -58,10 +58,10 @@
       display: block;
     }
 
-    /* --- 新增：行事曆區塊樣式 --- */
+    /* --- 行事曆區塊樣式 --- */
     .calendar-section {
-      max-width: 1000px; /* 與上方卡片區同寬 */
-      margin: 20px auto 60px auto; /* 上方留白 20px, 下方留白 60px */
+      max-width: 1000px;
+      margin: 20px auto 60px auto;
       padding: 0 20px;
     }
 
@@ -70,7 +70,7 @@
       color: #2c3e50;
       margin-bottom: 20px;
       padding-top: 20px;
-      border-top: 2px solid #ddd; /* 加一條分隔線區隔上方 */
+      border-top: 2px solid #ddd;
       font-size: 1.5rem;
       font-weight: bold;
     }
@@ -82,11 +82,35 @@
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
 
+    /* 這裡的 CSS 會強制覆蓋 iframe 原本的寬高，確保手機版完美顯示 */
     .calendar-frame {
       width: 100%;
-      height: 600px;
+      height: 800px; 
       border: 0;
       border-radius: 8px;
+    }
+
+    /* --- 行事曆圖例樣式 --- */
+    .calendar-legend {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      /* 修改間距：因為移到上方，改為下方留白 */
+      margin-bottom: 15px; 
+      margin-top: 0;
+      padding: 5px;
+      font-weight: bold;
+      font-size: 1rem;
+      background: #fff;
+      border-radius: 8px;
+      border-bottom: 1px solid #eee; /* 加一條細線區隔 */
+    }
+
+    .legend-item {
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
     }
 
     /* --- RWD 調整 --- */
@@ -96,21 +120,25 @@
         padding-top: 24px;
       }
       
-      /* 在手機版縮小間距，讓兩欄顯示時不會太擠 */
       .container {
         gap: 12px;
         padding: 10px;
       }
       
       .card {
-        /* 重新計算手機版寬度：50% 減去 新間距(12px) 的一半 */
         flex: 0 0 calc(50% - 6px); 
         max-width: calc(50% - 6px);
       }
 
-      /* 手機版行事曆高度稍微縮小 */
       .calendar-frame {
-        height: 450px;
+        height: 500px;
+      }
+
+      .calendar-legend {
+        font-size: 0.9rem;
+        gap: 10px;
+        justify-content: flex-start;
+        border-bottom: none; /* 手機版拿掉分隔線比較清爽 */
       }
     }
   </style>
@@ -137,14 +165,25 @@
   </div>
 
   <div class="calendar-section">
-    <div class="section-title">📅 育成會行事曆 (基訓/團務研討)</div>
+    <div class="section-title">📅 南二團 總行事曆</div>
     <div class="calendar-wrapper">
+      
+      <div class="calendar-legend">
+        <span class="legend-item" style="color: #d81b60;">● 小蟻團</span>
+        <span class="legend-item" style="color: #f6bf26;">● 炫蜂團</span>
+        <span class="legend-item" style="color: #795548;">● 奔鹿團</span>
+        <span class="legend-item" style="color: #3f51b5;">● 翔鷹團</span>
+        <span class="legend-item" style="color: #7cb342;">● 育成會(基訓/團務)</span>
+      </div>
+
       <iframe 
-        src="https://calendar.google.com/calendar/embed?src=04b7d9519d46fc124426f4d1225fdd5ed9fac631484a359170fbdb235e8c2b3e%40group.calendar.google.com&ctz=Asia%2FTaipei" 
+        src="https://calendar.google.com/calendar/embed?height=600&wkst=2&ctz=Asia%2FTaipei&showPrint=0&src=Njc3YmQyMDg5NDVlY2FiMDlkZjBjM2Q5NzM5ZjZjYWMxZDliNDcyZmE3ZDk4ZGEwZjFhZmMxNTkwYWExODIxMEBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&src=YWZhY2Y2ODk0ZDgwMGIyNGNkZmJiNDdkODRjMTI3YTFlZTRjN2MwYjZkOWY2MDFiNmZjN2QxMGMwY2U2ZmViMEBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&src=NWRmYjA3M2VlZTBiZGU2MGI1MzJhOTdjZTM5YjFkNTVjZWZhMWM2YzkwYjkyMDY5NTAwMDNhN2Y4OTdhMjUxNkBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&src=YjRjNjljZjRiZTU2MTgxYjgyMjc5ZWQyMGI2NTJjNTgzNDc4YzE5MGIzZmM3MDkzYjhjNWUxM2Y0YmM1MWUzMEBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&src=MDRiN2Q5NTE5ZDQ2ZmMxMjQ0MjZmNGQxMjI1ZmRkNWVkOWZhYzYzMTQ4NGEzNTkxNzBmYmRiMjM1ZThjMmIzZUBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&color=%23795548&color=%23d81b60&color=%23f6bf26&color=%233f51b5&color=%237cb342" 
         class="calendar-frame"
+        style="border:solid 1px #777" 
         frameborder="0" 
         scrolling="no">
       </iframe>
+
     </div>
   </div>
 
