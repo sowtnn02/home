@@ -92,13 +92,13 @@
     // 🔴 2. 設定你的 GAS 網址 (萬用查詢器)
     const MY_PROXY_URL = "https://script.google.com/macros/s/AKfycbxmzTs-dGe8rlGjeaUJH44bravhTNccqFsfImSz_wV-bSniF-E1aOqZ6nyShvyVYAtFCQ/exec";
 
-    // 🔴 3. 設定你的主資料庫 ID
-    const MASTER_DB_ID = "13v4T864SSZGSoNiIPGOY12mfzT2q5sbvDrarusC_zLE"; 
+    // 🔴 3. 設定你的主資料庫 ID (已更新)
+    const MASTER_DB_ID = "1rsQZORmQldGeco9YRNUn9jaO10ogvXpsVSqjk4Z8Ur0"; 
 
     // ✅ 團別對應 key (對應 team-data.js 裡的 key)
     const groupMap = { '小蟻團':'ant','炫蜂團':'bee','奔鹿團':'deer','翔鷹團':'eagle' };
 
-    // ✅ 資料庫中的工作表名稱
+    // ✅ 資料庫中的工作表名稱 (對應新表單的分頁)
     const sheetNameMap = {
       "小蟻團": '蜂蟻',
       "炫蜂團": '蜂蟻',
@@ -106,19 +106,16 @@
       "翔鷹團": '鷹'
     };
 
-    // ❌ 原本的 const teamData = { ... } 已經刪除，改用上面引入的檔案
-
     // 轉換成 GAS Proxy URL
     function toMyProxyUrl(originalUrl) {
       if (!originalUrl) return "";
       const match = originalUrl.match(/\/d\/(.*?)(\/|$)/);
       const targetId = match ? match[1] : "";
       if (!targetId) return "";
-      // 預設抓取 "表單回應 1"
       return `${MY_PROXY_URL}?targetId=${targetId}&sheetName=${encodeURIComponent("表單回應 1")}`;
     }
 
-    // 讀取主資料庫列表
+    // 讀取主資料庫列表 (含日期過濾)
     async function loadSheetsFromSheet(sheetName) {
       const url = `${MY_PROXY_URL}?targetId=${MASTER_DB_ID}&sheetName=${encodeURIComponent(sheetName)}`;
       try {
@@ -129,7 +126,28 @@
            alert("無法讀取主資料表");
            return [];
         }
-        return raw.map(item => ({
+
+        // --- 🟢 新增：日期過濾邏輯 ---
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const validData = raw.filter(item => {
+           // 1. 檢查上架日
+           if (item.date) {
+             const startDate = new Date(item.date);
+             startDate.setHours(0, 0, 0, 0);
+             if (startDate > today) return false; 
+           }
+           // 2. 檢查下架日
+           if (item.expiryDate) {
+             const endDate = new Date(item.expiryDate);
+             endDate.setHours(0, 0, 0, 0);
+             if (endDate < today) return false; 
+           }
+           return true;
+        });
+
+        return validData.map(item => ({
           name: `${item.month || ''} ${item.title || ''}`,
           url: toMyProxyUrl(item.response_url || item.form_url)
         }));
@@ -146,7 +164,6 @@
     searchBtn.addEventListener('click', async () => {
       results.innerHTML = '';
       
-      // 安全檢查：確認 teamData 是否成功載入
       if (typeof teamData === 'undefined') {
         alert("⚠️ 無法讀取名單資料，請檢查網路連線或 team-data.js 路徑。");
         return;
@@ -162,14 +179,13 @@
 
       results.innerHTML = '<li style="text-align:center; color:#666;">⏳ 查詢中，請稍候...</li>';
 
-      // 直接使用全域變數 teamData
       const allSubGroups = Object.keys(teamData[key]);
       const sheets = await loadSheetsFromSheet(masterSheetName);
 
       results.innerHTML = '';
 
       if (sheets.length === 0) {
-        results.innerHTML = '<li>⚠️ 找不到任何表單紀錄，請確認資料庫。</li>';
+        results.innerHTML = '<li>⚠️ 找不到任何表單紀錄，或是目前無開放的表單。</li>';
         return;
       }
 
@@ -243,6 +259,6 @@
         }
       }
     });
-  </script>
+</script>
 </body>
 </html>
