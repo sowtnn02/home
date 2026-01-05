@@ -2,190 +2,341 @@
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>荒野保護協會親子團南二團</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      font-family: "Noto Sans TC", sans-serif;
-      background: #f0f4f8;
-      color: #333;
-    }
-
+    /* --- 基礎樣式 --- */
+    body { font-family: "Segoe UI", "Noto Sans TC", sans-serif; background: #f0f4f8; margin: 0; padding: 0; color: #333; }
+    
     header {
       text-align: center;
-      padding: 40px 20px 10px;
+      padding: 30px 20px;
       font-size: 2rem;
       font-weight: bold;
       color: #2c3e50;
+      background: #fff;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      margin-bottom: 20px;
     }
 
-    /* --- 圖片選單區塊 --- */
-    .container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 24px;
-      padding: 20px;
-      max-width: 1000px;
-      margin: 0 auto;
+    /* --- 佈局容器 --- */
+    .container { 
+      display: flex; 
+      flex-wrap: wrap; 
+      justify-content: center; 
+      align-items: flex-start; 
+      padding: 0 2em 2em 2em; 
+      max-width: 1280px; 
+      margin: auto; 
+      gap: 20px; 
+    }
+    
+    /* 左側欄位：公告 + 行事曆 */
+    .left-column { 
+      flex: 1; 
+      min-width: 400px; 
+      display: flex; 
+      flex-direction: column; 
+      gap: 20px; 
     }
 
-    .card {
-      /* 一行兩欄，RWD 自動縮放 */
-      flex: 0 0 calc(50% - 12px); 
-      max-width: calc(50% - 12px);
-      aspect-ratio: 16 / 9;
+    /* 右側欄位：圖片入口 */
+    .right-column { 
+      flex: 0 0 320px; 
+      display: flex; 
+      flex-direction: column; 
+      gap: 15px; 
+    }
+    
+    .content-box { background: #fff; padding: 15px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); }
+
+    /* --- 公告欄位樣式 --- */
+    .news-grid { display: flex; gap: 15px; }
+    .news-column { flex: 1; padding: 10px; border-radius: 8px; display: flex; flex-direction: column; }
+    
+    /* 育成會專屬樣式 (草綠色系 #7cb342) */
+    .news-owl { 
+        background: #f1f8e9; /* 淺草綠 */
+        border: 1px solid #c5e1a5; /* 綠色邊框 */
+    } 
+
+    .news-header {
+      font-weight: bold; text-align: center; margin-bottom: 10px; padding-bottom: 5px;
+      border-bottom: 2px solid rgba(0,0,0,0.05); font-size: 1.1em; color: #558b2f;
+    }
+    
+    /* 捲軸設定 */
+    .news-scroll-box { max-height: 300px; overflow-y: auto; padding-right: 5px; min-height: 50px; }
+    .news-scroll-box::-webkit-scrollbar { width: 6px; }
+    .news-scroll-box::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); border-radius: 3px; }
+    .news-scroll-box::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); border-radius: 3px; }
+
+    .news-item {
+      background: #fff; margin-bottom: 8px; padding: 12px; border-radius: 6px;
+      cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; border: 1px solid rgba(0,0,0,0.05);
+    }
+    .news-item:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+    .news-date { font-size: 0.85em; color: #888; display: block; margin-bottom: 0; }
+    .news-title { font-size: 1em; font-weight: bold; color: #333; line-height: 1.4; }
+
+    /* --- 右側圖片卡片樣式 --- */
+    .nav-card {
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 9; /* 維持比例 */
       border-radius: 12px;
       overflow: hidden;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       transition: transform 0.2s ease;
       background: #fff;
     }
+    .nav-card:hover { transform: scale(1.02); }
+    .nav-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-    .card:hover {
-      transform: scale(1.03);
-    }
-
-    .card img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    /* --- 行事曆區塊樣式 --- */
-    .calendar-section {
-      max-width: 1000px;
-      margin: 20px auto 60px auto;
-      padding: 0 20px;
-    }
-
-    .section-title {
-      text-align: center;
-      color: #2c3e50;
-      margin-bottom: 20px;
-      padding-top: 20px;
-      border-top: 2px solid #ddd;
-      font-size: 1.5rem;
-      font-weight: bold;
-    }
-
-    .calendar-wrapper {
-      background: #fff;
-      padding: 15px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
-
-    /* 這裡的 CSS 會強制覆蓋 iframe 原本的寬高，確保手機版完美顯示 */
-    .calendar-frame {
-      width: 100%;
-      height: 800px; 
-      border: 0;
-      border-radius: 8px;
-    }
-
-    /* --- 行事曆圖例樣式 --- */
+    /* --- 行事曆樣式 --- */
+    .calendar-title { text-align: center; color: #2c3e50; margin: 0 0 10px 0; border-bottom: 2px solid #ddd; padding-bottom: 10px; font-size: 1.2em; font-weight: bold; }
     .calendar-legend {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 15px;
-      /* 修改間距：因為移到上方，改為下方留白 */
-      margin-bottom: 15px; 
-      margin-top: 0;
-      padding: 5px;
-      font-weight: bold;
-      font-size: 1rem;
-      background: #fff;
-      border-radius: 8px;
-      border-bottom: 1px solid #eee; /* 加一條細線區隔 */
+      display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;
+      margin-bottom: 15px; font-size: 0.9em; font-weight: bold;
+    }
+    .legend-item { white-space: nowrap; }
+    .calendar-frame { width: 100%; height: 700px; border: 0; border-radius: 8px; }
+
+    /* --- 懸浮視窗 (Modal) --- */
+    .modal-overlay {
+      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.6); z-index: 2000;
+      justify-content: center; align-items: center; padding: 20px;
+    }
+    .modal-content {
+      background: #fff; width: 100%; max-width: 700px; max-height: 90vh;
+      border-radius: 12px; overflow-y: auto; position: relative;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2); animation: fadeIn 0.3s ease;
+    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .modal-header { padding: 20px; background: #f9f9f9; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 10; }
+    .modal-title { font-size: 1.4em; font-weight: bold; color: #558b2f; margin: 0; }
+    .modal-date { color: #666; font-size: 0.9em; margin-top: 5px; }
+    .close-btn { position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 2em; cursor: pointer; color: #888; line-height: 0.8; }
+    .modal-body { padding: 25px; line-height: 1.6; }
+
+    .section-block { margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px dashed #eee; }
+    .section-title { font-weight: bold; color: #2c5d47; margin-bottom: 10px; font-size: 1.1em; display:flex; align-items:center; gap:8px;}
+    .check-list { list-style: none; padding: 0; margin: 0; }
+    .check-list li { position: relative; padding-left: 28px; margin-bottom: 8px; }
+    .check-list li::before { content: '✔'; position: absolute; left: 0; top: 0; color: #5ca08e; font-weight: bold; }
+    .link-text { color: #5ca08e; text-decoration: underline; font-weight: bold; word-break: break-all; }
+    .link-text:hover { color: #365119; }
+
+    /* --- RWD 手機版設定 --- */
+    @media (max-width: 960px) {
+      .container { padding: 1em; gap: 1em; }
+      .left-column { min-width: 0; }
     }
 
-    .legend-item {
-      white-space: nowrap;
-      display: flex;
-      align-items: center;
-    }
+    @media (max-width: 768px) {
+      .container { flex-direction: column; }
+      .left-column { width: 100%; }
 
-    /* --- RWD 調整 --- */
-    @media (max-width: 600px) {
-      header {
-        font-size: 1.5rem;
-        padding-top: 24px;
+      /* --- 修正處：將圖片入口改為網格佈局 (兩欄) --- */
+      .right-column { 
+        width: 100%; 
+        flex: auto; 
+        order: -1; 
+        display: grid;             /* 改用 Grid 排版 */
+        grid-template-columns: 1fr 1fr; /* 兩欄等寬 */
+        gap: 10px;                 /* 間距 */
       }
       
-      .container {
-        gap: 12px;
-        padding: 10px;
-      }
-      
-      .card {
-        flex: 0 0 calc(50% - 6px); 
-        max-width: calc(50% - 6px);
-      }
-
-      .calendar-frame {
-        height: 500px;
-      }
-
-      .calendar-legend {
-        font-size: 0.9rem;
-        gap: 10px;
-        justify-content: flex-start;
-        border-bottom: none; /* 手機版拿掉分隔線比較清爽 */
-      }
+      .news-grid { flex-direction: column; }
+      .news-scroll-box { max-height: 250px; }
+      .calendar-frame { height: 500px; }
     }
   </style>
 </head>
 <body>
   <header>荒野保護協會親子團南二團</header>
-
+  
   <div class="container">
-    <a class="card" href="https://sowtnn02.github.io/antnbee/" target="_blank">
-      <img src="img/antnbee01.png" alt="蟻蜂家庭入口" />
-    </a>
-
-    <a class="card" href="https://sowtnn02.github.io/deer/" target="_blank">
-      <img src="img/deer01.png" alt="奔鹿家庭入口" />
-    </a>
-
-    <a class="card" href="https://sowtnn02.github.io/eagle/" target="_blank">
-      <img src="img/eagle01.png" alt="翔鷹家庭入口" />
-    </a>
-
-    <a class="card" href="https://sowtnn02.github.io/home/owl_work" target="_blank">
-      <img src="img/owl01.png" alt="育導工作入口" />
-    </a>
-  </div>
-
-  <div class="calendar-section">
-    <div class="section-title">📅 南二團 總行事曆</div>
-    <div class="calendar-wrapper">
+    
+    <div class="left-column">
       
-      <div class="calendar-legend">
-        <span class="legend-item" style="color: #d81b60;">● 小蟻團</span>
-        <span class="legend-item" style="color: #f6bf26;">● 炫蜂團</span>
-        <span class="legend-item" style="color: #795548;">● 奔鹿團</span>
-        <span class="legend-item" style="color: #3f51b5;">● 翔鷹團</span>
-        <span class="legend-item" style="color: #7cb342;">● 育成會(基訓/團務)</span>
+      <div class="content-box">
+        <!-- <h3 style="text-align:center; color:#558b2f; margin-top:0;">📢 育成會佈告欄</h3> -->
+        <div class="news-grid">
+          <div class="news-column news-owl">
+            <div class="news-header"><span style="color:#7cb342;"></span> 📢 育成會佈告欄</div>
+            <div id="owl-news-list" class="news-scroll-box">
+              <div style="text-align:center; padding:20px; color:#aaa;">載入中...</div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <iframe 
-        src="https://calendar.google.com/calendar/embed?height=600&wkst=2&ctz=Asia%2FTaipei&showPrint=0&showTz=0&showTitle=0&src=Njc3YmQyMDg5NDVlY2FiMDlkZjBjM2Q5NzM5ZjZjYWMxZDliNDcyZmE3ZDk4ZGEwZjFhZmMxNTkwYWExODIxMEBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&src=YWZhY2Y2ODk0ZDgwMGIyNGNkZmJiNDdkODRjMTI3YTFlZTRjN2MwYjZkOWY2MDFiNmZjN2QxMGMwY2U2ZmViMEBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&src=NWRmYjA3M2VlZTBiZGU2MGI1MzJhOTdjZTM5YjFkNTVjZWZhMWM2YzkwYjkyMDY5NTAwMDNhN2Y4OTdhMjUxNkBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&src=YjRjNjljZjRiZTU2MTgxYjgyMjc5ZWQyMGI2NTJjNTgzNDc4YzE5MGIzZmM3MDkzYjhjNWUxM2Y0YmM1MWUzMEBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&src=MDRiN2Q5NTE5ZDQ2ZmMxMjQ0MjZmNGQxMjI1ZmRkNWVkOWZhYzYzMTQ4NGEzNTkxNzBmYmRiMjM1ZThjMmIzZUBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&color=%23795548&color=%23d81b60&color=%23f6bf26&color=%233f51b5&color=%237cb342" 
-        class="calendar-frame"
-        style="border:solid 1px #777" 
-        frameborder="0" 
-        scrolling="no">
-      </iframe>
+      <div class="content-box">
+        <h3 class="calendar-title">📅 南二團 總行事曆</h3>
+        <div class="calendar-legend">
+            <span class="legend-item" style="color: #d81b60;">● 小蟻團</span>
+            <span class="legend-item" style="color: #f6bf26;">● 炫蜂團</span>
+            <span class="legend-item" style="color: #795548;">● 奔鹿團</span>
+            <span class="legend-item" style="color: #3f51b5;">● 翔鷹團</span>
+            <span class="legend-item" style="color: #7cb342;">● 育成會</span>
+        </div>
+        <iframe 
+          src="https://calendar.google.com/calendar/embed?height=600&wkst=2&ctz=Asia%2FTaipei&showPrint=0&showTz=0&showTitle=0&src=Njc3YmQyMDg5NDVlY2FiMDlkZjBjM2Q5NzM5ZjZjYWMxZDliNDcyZmE3ZDk4ZGEwZjFhZmMxNTkwYWExODIxMEBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&src=YWZhY2Y2ODk0ZDgwMGIyNGNkZmJiNDdkODRjMTI3YTFlZTRjN2MwYjZkOWY2MDFiNmZjN2QxMGMwY2U2ZmViMEBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&src=NWRmYjA3M2VlZTBiZGU2MGI1MzJhOTdjZTM5YjFkNTVjZWZhMWM2YzkwYjkyMDY5NTAwMDNhN2Y4OTdhMjUxNkBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&src=YjRjNjljZjRiZTU2MTgxYjgyMjc5ZWQyMGI2NTJjNTgzNDc4YzE5MGIzZmM3MDkzYjhjNWUxM2Y0YmM1MWUzMEBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&src=MDRiN2Q5NTE5ZDQ2ZmMxMjQ0MjZmNGQxMjI1ZmRkNWVkOWZhYzYzMTQ4NGEzNTkxNzBmYmRiMjM1ZThjMmIzZUBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&color=%23795548&color=%23d81b60&color=%23f6bf26&color=%233f51b5&color=%237cb342" 
+          class="calendar-frame"
+          frameborder="0" 
+          scrolling="no">
+        </iframe>
+      </div>
+    </div>
 
+    <div class="right-column">
+      <a class="nav-card" href="https://sowtnn02.github.io/antnbee/" target="_blank">
+        <img src="img/antnbee01.png" alt="蟻蜂家庭入口" />
+      </a>
+
+      <a class="nav-card" href="https://sowtnn02.github.io/deer/" target="_blank">
+        <img src="img/deer01.png" alt="奔鹿家庭入口" />
+      </a>
+
+      <a class="nav-card" href="https://sowtnn02.github.io/eagle/" target="_blank">
+        <img src="img/eagle01.png" alt="翔鷹家庭入口" />
+      </a>
+
+      <a class="nav-card" href="https://sowtnn02.github.io/home/owl_work" target="_blank">
+        <img src="img/owl01.png" alt="育導工作入口" />
+      </a>
+    </div>
+
+  </div>
+
+  <div id="news-modal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button class="close-btn" onclick="closeModal()">×</button>
+        <h2 class="modal-title" id="m-title">標題</h2>
+        <div class="modal-date" id="m-date">日期</div>
+      </div>
+      <div class="modal-body" id="m-body">
+        </div>
     </div>
   </div>
 
+  <script>
+    const SHEET_ID = "1_yffIOhto8dSwRCcmndN1KucMddrcqcuNgGM7yU9gH4";
+
+    function formatContent(text) {
+      if (!text) return "";
+      const urlRegex = /(https?:\/\/[^\s]+)/g;
+      const linkedText = text.replace(urlRegex, function(url) {
+        return `<a href="${url}" target="_blank" class="link-text">${url}</a>`;
+      });
+      return linkedText.replace(/\n/g, "<br>");
+    }
+
+    async function fetchNews(group, containerId, type) {
+      const url = `https://opensheet.elk.sh/${SHEET_ID}/${group}_News`;
+      const container = document.getElementById(containerId);
+      
+      try {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error("API Error");
+        let data = await res.json();
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); 
+
+        data = data.filter(item => {
+          const startDate = new Date(item.date);
+          startDate.setHours(0, 0, 0, 0);
+          if (startDate > today) return false; 
+          if (!item.expiryDate) return true;
+          const expiry = new Date(item.expiryDate);
+          expiry.setHours(0, 0, 0, 0);
+          return expiry >= today; 
+        });
+
+        data.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        let html = "";
+        if (data.length === 0) {
+          html = "<div style='text-align:center; color:#999; font-size:0.9em; padding:20px;'>目前無公告</div>";
+        } else {
+          data.forEach(item => {
+            item.type = type; 
+            html += `
+              <div class="news-item" onclick='openModal(${JSON.stringify(item)})'>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                   <span class="news-date" style="margin-bottom:0;">${item.date}</span>
+                   <span style="font-size:0.85em; color:#999;">${item.author ? 'by ' + item.author : ''}</span>
+                </div>
+                <div class="news-title">${item.title}</div>
+              </div>
+            `;
+          });
+        }
+        container.innerHTML = html;
+
+      } catch (error) {
+        console.error("無法載入公告:", error);
+        container.innerHTML = "<div style='text-align:center; color:red; padding:10px;'>載入失敗</div>";
+      }
+    }
+
+    // 載入育成會 (Owl) 公告
+    fetchNews("Owl", "owl-news-list", "owl");
+
+    // Modal 邏輯
+    function openModal(item) {
+      document.getElementById("m-title").innerText = item.title;
+      const authorText = item.author ? `&nbsp;&nbsp;<span style="font-size:0.9em; color:#5ca08e;">(發布者：${item.author})</span>` : "";
+      document.getElementById("m-date").innerHTML = "發布日期：" + item.date + authorText;
+      
+      let bodyHtml = "";
+
+      if(item.contentA) {
+        bodyHtml += `
+          <div class="section-block">
+            <div class="section-title">📍 行程與內容</div>
+            <div>${formatContent(item.contentA)}</div>
+          </div>`;
+      }
+      if(item.contentB) {
+        bodyHtml += `
+          <div class="section-block" style="background:#fffbe6; padding:15px; border-radius:8px;">
+            <div class="section-title">🔥 物資與人力募集</div>
+            <div>${formatContent(item.contentB)}</div>
+          </div>`;
+      }
+      if(item.noteD || item.listD) {
+        bodyHtml += `<div class="section-block" style="background:#f4f6f8; padding:15px; border-radius:12px;">`;
+        bodyHtml += `<div class="section-title">📝 備註 / 清單</div>`;
+        if(item.noteD) bodyHtml += `<div style="margin-bottom:10px; color:#555;">${item.noteD}</div>`;
+        if(item.listD) {
+          const listItems = item.listD.split('\n').map(line => `<li>${line}</li>`).join('');
+          bodyHtml += `<ul class="check-list">${listItems}</ul>`;
+        }
+        bodyHtml += `</div>`;
+      }
+      if(item.noteC || item.listC) {
+        bodyHtml += `<div class="section-block" style="background:#eef9f5; padding:15px; border-radius:12px;">`;
+        bodyHtml += `<div class="section-title">其他事項</div>`;
+        if(item.noteC) bodyHtml += `<div style="margin-bottom:10px;">${item.noteC}</div>`;
+        if(item.listC) {
+          const listItems = item.listC.split('\n').map(line => `<li>${line}</li>`).join('');
+          bodyHtml += `<ul class="check-list">${listItems}</ul>`;
+        }
+        bodyHtml += `</div>`;
+      }
+
+      document.getElementById("m-body").innerHTML = bodyHtml;
+      document.getElementById("news-modal").style.display = "flex";
+    }
+
+    function closeModal() { document.getElementById("news-modal").style.display = "none"; }
+    document.getElementById("news-modal").addEventListener("click", function(e) { if(e.target === this) closeModal(); });
+  </script>
 </body>
 </html>
