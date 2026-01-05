@@ -155,9 +155,11 @@
   <script>
     // 🔴 設定參數
     const MY_PROXY_URL = "https://script.google.com/macros/s/AKfycbxmzTs-dGe8rlGjeaUJH44bravhTNccqFsfImSz_wV-bSniF-E1aOqZ6nyShvyVYAtFCQ/exec";
-    const MASTER_DB_ID = "13v4T864SSZGSoNiIPGOY12mfzT2q5sbvDrarusC_zLE"; 
+    
+    // 🔴 3. 設定你的主資料庫 ID (已更新)
+    const MASTER_DB_ID = "1rsQZORmQldGeco9YRNUn9jaO10ogvXpsVSqjk4Z8Ur0"; 
 
-    // ✅ 團別對應 key (對應 work-team-data.js 裡的 key)
+    // ✅ 團別對應 key
     const groupMap = { '小蟻團':'ant', '炫蜂團':'bee', '奔鹿團':'deer', '翔鷹團':'eagle' };
 
     // ✅ 資料庫中的工作表名稱
@@ -177,7 +179,7 @@
       return `${MY_PROXY_URL}?targetId=${targetId}&sheetName=${encodeURIComponent("表單回應 1")}`;
     }
 
-    // 讀取主資料庫列表
+    // 讀取主資料庫列表 (含日期過濾)
     async function loadSheetsFromSheet(sheetName) {
       const url = `${MY_PROXY_URL}?targetId=${MASTER_DB_ID}&sheetName=${encodeURIComponent(sheetName)}`;
       try {
@@ -188,7 +190,28 @@
            alert("無法讀取主資料表");
            return [];
         }
-        return raw.map(item => ({
+
+        // --- 🟢 新增：日期過濾邏輯 ---
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const validData = raw.filter(item => {
+           // 1. 檢查上架日
+           if (item.date) {
+             const startDate = new Date(item.date);
+             startDate.setHours(0, 0, 0, 0);
+             if (startDate > today) return false; 
+           }
+           // 2. 檢查下架日
+           if (item.expiryDate) {
+             const endDate = new Date(item.expiryDate);
+             endDate.setHours(0, 0, 0, 0);
+             if (endDate < today) return false; 
+           }
+           return true;
+        });
+
+        return validData.map(item => ({
           name: `${item.month || ''} ${item.title || ''}`,
           url: toMyProxyUrl(item.response_url || item.form_url)
         }));
@@ -205,7 +228,6 @@
     searchBtn.addEventListener('click', async () => {
       results.innerHTML = '';
       
-      // 安全檢查
       if (typeof workteamData === 'undefined') {
         alert("⚠️ 無法讀取名單資料，請檢查網路連線或 work-team-data.js 路徑。");
         return;
@@ -227,15 +249,13 @@
       results.innerHTML = '';
 
       if (sheets.length === 0) {
-        results.innerHTML = '<div style="text-align:center; padding:20px;">⚠️ 找不到任何表單紀錄，請確認資料庫。</div>';
+        results.innerHTML = '<div style="text-align:center; padding:20px;">⚠️ 找不到任何表單紀錄，或是目前無開放的表單。</div>';
         return;
       }
 
-      // --- 開始逐一處理每個活動表單 ---
       for (const sheet of sheets) {
         if (!sheet.url || sheet.url.includes("targetId=&")) continue;
 
-        // 建立該月份的區塊
         const sheetBlock = document.createElement('div');
         sheetBlock.innerHTML = `<div class="sheet-title">${sheet.name}</div>`;
         results.appendChild(sheetBlock);
@@ -250,18 +270,15 @@
           continue;
         }
 
-        // --- 建立快速查找表 (Mapping) ---
         const submissionMap = {};
         formData.forEach(row => {
           const vals = Object.values(row); 
-          // Index 1 = B欄 (Family)
           const famName = (vals[1] || "").trim();
           if (famName) {
             submissionMap[famName] = vals;
           }
         });
 
-        // --- 逐一處理該團的子團隊 ---
         for (const catName of teamCategories) {
           const members = workteamData[key][catName];
           
@@ -276,17 +293,10 @@
 
             let statusHtml = '<span class="status-unfilled">尚未填寫</span>';
             
-            // 1. 檢查是否在 B 欄 (submissionMap)
             if (submissionMap[memFamily]) {
               const rowVals = submissionMap[memFamily];
 
-              // 🔴 特例處理：翔鷹團副團長（小鷹）
               if (memTitle === "副團長（小鷹）") {
-                // 邏輯：
-                // C欄(Index 2) 含志工名 -> 結果在 E欄(Index 4)
-                // F欄(Index 5) 含志工名 -> 結果在 H欄(Index 7)
-                // I欄(Index 8) 含志工名 -> 結果在 K欄(Index 10)
-                
                 const cVal = (rowVals[2] || "").toString();
                 const fVal = (rowVals[5] || "").toString();
                 const iVal = (rowVals[8] || "").toString();
@@ -310,14 +320,10 @@
                      statusHtml = `<span class="status-unfilled">${foundStatus}</span>`;
                    }
                 } else {
-                   // 有填家庭，但沒在 C/F/I 找到這名字 (可能填在其他欄位或沒選)
                    statusHtml = '<span class="status-unfilled">未勾選</span>';
                 }
 
               } else {
-                // 🔵 一般工作人員邏輯 (原邏輯)
-                // L欄(Index 11) 出席
-                // M欄(Index 12) 請假
                 const attendStr = (rowVals[11] || "").toString();
                 const leaveStr  = (rowVals[12] || "").toString();
 
@@ -331,7 +337,6 @@
               }
             }
 
-            // 輸出該員列
             const rowDiv = document.createElement('div');
             rowDiv.className = 'member-row';
             rowDiv.innerHTML = `
@@ -346,6 +351,6 @@
         }
       }
     });
-  </script>
+</script>
 </body>
 </html>
