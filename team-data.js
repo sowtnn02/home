@@ -18,7 +18,7 @@ const teamData = {
       { family: "47 海峽 / 野薑花", child: "小石虎" },
       { family: "53 松樹 / 松鼠", child: "小松果" },
       { family: "58 管鬚蟹 / 藍腹鷴", child: "絨鼠" },
-      { family: "76 羅漢松 / 風鈴木", child: "馬來貘" },
+      // { family: "76 羅漢松 / 風鈴木", child: "馬來貘" },
       { family: "80 田嬰 / 小雞", child: "膨鼠" },
     ],
     "小綠蟻": [
