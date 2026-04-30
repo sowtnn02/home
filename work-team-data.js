@@ -25,7 +25,7 @@ const workteamData = {
       { title: "攝影", family: "34 泥鰍 / 蘆薈", volunteer: "泥鰍" },
       { title: "攝影", family: "28 山 / 秋", volunteer: "秋" },
       { title: "攝影", family: "58 管鬚蟹 / 藍腹鷴", volunteer: "管鬚蟹" },
-      { title: "攝影", family: "64 山羊 / 拉布拉多", volunteer: "拉布拉多" }
+      // { title: "攝影", family: "64 山羊 / 拉布拉多", volunteer: "拉布拉多" }
     ]
   },
   bee: {
