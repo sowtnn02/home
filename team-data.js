@@ -6,7 +6,7 @@ const teamData = {
       { family: "52 海膽 / 芒草", child: "毛毛雨" },
       { family: "55 Hyena / 銀合歡", child: "Meerkat" },
       { family: "62 落羽松", child: "黑面琵鷺" },
-      { family: "64 山羊 / 拉布拉多", child: "紫斑蝶" },
+      // { family: "64 山羊 / 拉布拉多", child: "紫斑蝶" },
       { family: "71 海岸線 / 星辰花", child: "小金魚" },
       { family: "78 綠豆 / 紅豆", child: "紅豆仁" },
       { family: "81 狗尾草 / 卡斯比亞", child: "小樹懶" },
@@ -50,7 +50,7 @@ const teamData = {
       { family: "34 泥鰍 / 蘆薈", child: "稀泥裡" },
       { family: "40 極光 / 藍洞", child: "火山" },
       { family: "42 小麥穗 / 尤加利", child: "貓薄荷" },
-      { family: "64 山羊 / 拉布拉多", child: "狐猴" },
+      // { family: "64 山羊 / 拉布拉多", child: "狐猴" },
       { family: "69 魟魚 / 波波草", child: "葡萄柚" },
       { family: "74 跑山雞 / 黃花風鈴木", child: "櫻桃蘿蔔" },
       { family: "77 桂冠草 / 北極星", child: "樹蛙" }
