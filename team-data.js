@@ -1,39 +1,39 @@
 const teamData = {
   ant: {
     "小黑蟻": [
-      { family: "37 風神翼龍 / 小葉欖仁", child: "彩虹龍" },
       { family: "51 水熊蟲 / 橘小豬", child: "獵豹" },
       { family: "72 鮭魚頭 / 麥芽糖", child: "大王魷魚" },
       { family: "79 汪洋大海 / 滿天星", child: "粉紅兔" },
+      { family: "37 風神翼龍 / 小葉欖仁", child: "彩虹龍" },
       { family: "90 柚子樹 / 柚花", child: "小柚子" },
-      { family: "91 小丑魚 / 珊瑚礁", child: "珍珠美人魚" },
-      { family: "96 高山鯝魚 / 臺灣香魚", child: "櫻花鉤吻鮭" }
+      { family: "96 高山鯝魚 / 臺灣香魚", child: "櫻花鉤吻鮭" },
+      { family: "91 小丑魚 / 珊瑚礁", child: "珍珠美人魚" }
     ],
     "小黃蟻": [
-      { family: "28 山 / 秋", child: "月" },
       { family: "55 Hyena / 銀合歡", child: "Beluga" },
       { family: "55 Hyena / 銀合歡", child: "Meerkat" },
+      { family: "93 雨 / 陽光", child: "小狗" },
+      { family: "28 山 / 秋", child: "月" },
       { family: "80 田嬰 / 小雞", child: "膨鼠" },
       { family: "86 石斑 / 丹楓", child: "小象" },
-      { family: "93 雨 / 陽光", child: "小狗" },
       { family: "94 暴龍 / 琥珀", child: "錢鼠" },
       { family: "95 山椒魚 / 豆娘", child: "始祖鳥" }
     ],
     "小綠蟻": [
       { family: "46 冬至 / 瓢蟲", child: "小美人魚" },
-      { family: "47 海峽 / 野薑花", child: "小石虎" },
       { family: "56 角鯨 / 海鷗", child: "小蝙蝠" },
       { family: "71 海岸線 / 星辰花", child: "小金魚" },
       { family: "97 地瓜 / 暗光鳥", child: "小馬" },
+      { family: "47 海峽 / 野薑花", child: "小石虎" },
       { family: "98 土星 / 海棠", child: "珍珠" }
     ],
     "小紅蟻": [
-      { family: "44 米蝦 / 珊瑚大戟", child: "捕蠅草" },
       { family: "61 薰衣草 / 花園鰻", child: "花園鰻" },
+      { family: "89 龜殼花 / 豆腐鯊", child: "豆腐鯊" },
+      { family: "89 龜殼花 / 草莓角蛙", child: "草莓角蛙" },
+      { family: "44 米蝦 / 珊瑚大戟", child: "捕蠅草" },
       { family: "81 狗尾草 / 卡斯比亞", child: "小樹懶" },
       { family: "82 白臘樹 / 山茶花", child: "南瓜" },
-      { family: "89 龜殼花 / 草莓角蛙", child: "草莓角蛙" },
-      { family: "89 龜殼花 / 豆腐鯊", child: "豆腐鯊" },
       { family: "92 海波浪 / 寶石花", child: "皇帝企鵝" }
     ]
   },
@@ -42,44 +42,44 @@ const teamData = {
       { family: "26 海獅 / 海狗", child: "海豹" },
       { family: "28 山 / 秋", child: "木" },
       { family: "35 松果 / 台灣冷杉", child: "茉莉" },
-      { family: "37 風神翼龍 / 小葉欖仁", child: "黃鸝" },
       { family: "43 袋鼠 / 小羽苔", child: "銅錢草" },
-      { family: "60 森林 / 螢火蟲", child: "美洲豹" },
       { family: "79 汪洋大海 / 滿天星", child: "豬豬德" },
-      { family: "93 雨 / 陽光", child: "卡皮巴拉" }
+      { family: "93 雨 / 陽光", child: "卡皮巴拉" },
+      { family: "37 風神翼龍 / 小葉欖仁", child: "黃鸝" },
+      { family: "60 森林 / 螢火蟲", child: "美洲豹" }
     ],
     "虎頭蜂": [
       { family: "22 蟑螂 / 石榴", child: "狐獴" },
-      { family: "31 Camel / 玄鳳", child: "黃金雉" },
       { family: "33 泥巴 / 蘆葦", child: "羊咩咩" },
       { family: "36 太陽 / 銀河", child: "宇宙" },
-      { family: "39 燈籠果 / 桔梗", child: "小花鹿" },
       { family: "45 鯨頭鸛 / 草履蟲", child: "小老虎" },
-      { family: "58 管鬚蟹 / 藍腹鷴", child: "絨鼠" },
+      { family: "31 Camel / 玄鳳", child: "黃金雉" },
       { family: "86 石斑 / 丹楓", child: "小蘋果" },
+      { family: "39 燈籠果 / 桔梗", child: "小花鹿" },
+      { family: "58 管鬚蟹 / 藍腹鷴", child: "絨鼠" },
       { family: "99 油點草 / 藍雪花", child: "岩漿" }
     ],
     "長腳蜂": [
-      { family: "26 海獅 / 海狗", child: "海星" },
       { family: "27 咬人貓 / 嬰兒淚", child: "雞蛋花" },
+      { family: "74 跑山雞 / 黃花風鈴木", child: "櫻桃蘿蔔" },
+      { family: "77 桂冠草 / 北極星", child: "樹蛙" },
+      { family: "87 翡翠木 / 紫薊", child: "甘草" },
+      { family: "26 海獅 / 海狗", child: "海星" },
       { family: "44 米蝦 / 珊瑚大戟", child: "太陽系" },
       { family: "47 海峽 / 野薑花", child: "太陽" },
       { family: "52 海膽 / 芒草", child: "毛毛雨" },
-      { family: "62 落羽松", child: "黑面琵鷺" },
-      { family: "74 跑山雞 / 黃花風鈴木", child: "櫻桃蘿蔔" },
-      { family: "77 桂冠草 / 北極星", child: "樹蛙" },
-      { family: "87 翡翠木 / 紫薊", child: "甘草" }
+      { family: "62 落羽松", child: "黑面琵鷺" }
     ],
     "細腰蜂": [
       { family: "04 水熊 / 玉露", child: "兵蟻" },
       { family: "18 橘子皮 / 橘子樹", child: "橘子籽" },
+      { family: "58 管鬚蟹 / 藍腹鷴", child: "雪貂" },
+      { family: "93 雨 / 陽光", child: "天空" },
       { family: "40 極光 / 藍洞", child: "火山" },
       { family: "42 小麥穗 / 尤加利", child: "貓薄荷" },
       { family: "48 折衷鸚鵡 / 海鸚", child: "彩虹巨嘴鳥" },
-      { family: "58 管鬚蟹 / 藍腹鷴", child: "雪貂" },
       { family: "67 腕龍 / 荔枝", child: "海豚" },
-      { family: "87 翡翠木 / 紫薊", child: "橡實果" },
-      { family: "93 雨 / 陽光", child: "天空" }
+      { family: "87 翡翠木 / 紫薊", child: "橡實果" }
     ]
   },
   deer: {
