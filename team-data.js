@@ -3,7 +3,6 @@ const teamData = {
     "小黑蟻": [
       { family: "37 風神翼龍 / 小葉欖仁", child: "彩虹龍" },
       { family: "51 水熊蟲 / 橘小豬", child: "獵豹" },
-      { family: "71 海岸線 / 星辰花", child: "小金魚" },
       { family: "72 鮭魚頭 / 麥芽糖", child: "大王魷魚" },
       { family: "79 汪洋大海 / 滿天星", child: "粉紅兔" },
       { family: "90 柚子樹 / 柚花", child: "小柚子" },
@@ -23,17 +22,18 @@ const teamData = {
     "小綠蟻": [
       { family: "46 冬至 / 瓢蟲", child: "小美人魚" },
       { family: "47 海峽 / 野薑花", child: "小石虎" },
-      { family: "61 薰衣草", child: "花園鰻" },
+      { family: "56 角鯨 / 海鷗", child: "小蝙蝠" },
+      { family: "71 海岸線 / 星辰花", child: "小金魚" },
       { family: "97 地瓜 / 暗光鳥", child: "小馬" },
       { family: "98 土星 / 海棠", child: "珍珠" }
     ],
     "小紅蟻": [
       { family: "44 米蝦 / 珊瑚大戟", child: "捕蠅草" },
-      { family: "56 角鯨 / 海鷗", child: "小蝙蝠" },
+      { family: "61 薰衣草 / 花園鰻", child: "花園鰻" },
       { family: "81 狗尾草 / 卡斯比亞", child: "小樹懶" },
       { family: "82 白臘樹 / 山茶花", child: "南瓜" },
-      { family: "89 龜殼花", child: "草莓角蛙" },
-      { family: "89 龜殼花", child: "豆腐鯊" },
+      { family: "89 龜殼花 / 草莓角蛙", child: "草莓角蛙" },
+      { family: "89 龜殼花 / 豆腐鯊", child: "豆腐鯊" },
       { family: "92 海波浪 / 寶石花", child: "皇帝企鵝" }
     ]
   },
